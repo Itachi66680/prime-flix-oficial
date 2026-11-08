@@ -7,172 +7,149 @@
 <title>Prime Flix</title>
 <style>
 *{box-sizing:border-box}
-body{
- margin:0;background:#09090f;color:white;
- font-family:Arial,sans-serif
-}
-header{
- background:#171720;padding:25px 16px;
- text-align:center
-}
-h1{color:#e50914;font-size:35px}
-button{
- background:#e50914;color:white;border:0;
- padding:13px 20px;border-radius:10px;
- cursor:pointer;font-weight:bold
-}
-button:hover{background:#b80710}
-#loginArea{margin:20px 0}
-#perfil img{
- width:48px;height:48px;
- border-radius:50%;vertical-align:middle
-}
-#perfil{display:none}
-#nome{margin:10px}
-input{
- width:100%;max-width:500px;padding:15px;
- border:0;border-radius:10px;
- font-size:16px
-}
+body{margin:0;background:#09090f;color:white;font-family:Arial,sans-serif}
+header{background:#171720;padding:24px 16px;text-align:center}
+h1{color:#e50914}
+button{padding:12px 18px;background:#e50914;color:white;border:0;border-radius:9px;cursor:pointer}
+input{width:100%;max-width:480px;padding:14px;border:0;border-radius:10px;margin:15px auto}
 main{padding:20px}
-.catalogo{
- display:grid;
- grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
- gap:15px
-}
-.card{
- background:#20202d;padding:24px 12px;
- border-radius:14px;text-align:center;
- font-size:19px
-}
-section{margin-bottom:30px}
-#mensagem{font-size:14px;color:#ddd}
-footer{
- padding:25px;text-align:center;
- color:#aaa;font-size:13px
-}
+.catalogo{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:15px}
+.card{background:#20202c;border-radius:12px;overflow:hidden;padding-bottom:15px}
+.capa{width:100%;height:210px;object-fit:cover;background:#30303c}
+.card h3,.card p{margin:12px;overflow-wrap:anywhere}
+.card button{margin:5px 12px}
+#perfil{display:none;margin:15px}
+#foto{width:45px;height:45px;border-radius:50%}
+video{width:100%;max-width:700px;border-radius:12px}
+#playerBox{margin-top:25px}
+#status{color:#aaa}
 </style>
 </head>
 <body>
-
 <header>
 <h1>🎬 PRIME FLIX</h1>
 <p>Filmes, séries e animes em um só lugar!</p>
-
-<div id="loginArea">
-<button id="entrar" disabled>Carregando login...</button>
+<button id="entrar" disabled>Carregando...</button>
 <div id="perfil">
-<img id="foto" alt="Foto do usuário">
+<img id="foto" alt="Foto">
 <p id="nome"></p>
-<button id="sair">Sair da conta</button>
+<button id="sair">Sair</button>
 </div>
-<p id="mensagem"></p>
-</div>
-
-<input id="busca" type="search"
-placeholder="🔎 Pesquisar..." aria-label="Pesquisar no catálogo">
+<p id="loginStatus"></p>
+<input id="busca" placeholder="🔎 Pesquisar filmes, séries e animes">
 </header>
-
 <main>
 <h2>🍿 Catálogo</h2>
-
-<div class="catalogo" id="catalogo">
-<div class="card">🎥 Filmes</div>
-<div class="card">📺 Séries</div>
-<div class="card">⛩️ Animes</div>
-</div>
-
-<section>
-<h2>🔥 Em destaque</h2>
-<p>Novidades em breve!</p>
+<p id="status">Carregando conteúdos...</p>
+<div id="catalogo" class="catalogo"></div>
+<section id="playerBox" hidden>
+<h2 id="playerTitulo"></h2>
+<video id="player" controls playsinline></video>
 </section>
 </main>
 
-<footer>
-© 2026 Prime Flix
-<p>Conteúdos disponibilizados com autorização.</p>
-</footer>
-
 <script type="module">
-import { initializeApp } from
-"https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
+import {initializeApp} from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
+import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js";
+import {getFirestore,collection,onSnapshot} from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
 
-import {
- getAuth,
- GoogleAuthProvider,
- signInWithPopup,
- signOut,
- onAuthStateChanged
-} from
-"https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js";
-
-const firebaseConfig = {
- apiKey:"AIzaSyAwdh-gDSLvuT5SLObn7oLU2rMLPcqUcs0",
- authDomain:"prime-flix-ca7aa.firebaseapp.com",
- projectId:"prime-flix-ca7aa",
- storageBucket:"prime-flix-ca7aa.firebasestorage.app",
- messagingSenderId:"227931199847",
- appId:"1:227931199847:web:dd25ad57e1bd47aa3237c2"
+const config={
+apiKey:"AIzaSyAwdh-gDSLvuT5SLObn7oLU2rMLPcqUcs0",
+authDomain:"prime-flix-ca7aa.firebaseapp.com",
+projectId:"prime-flix-ca7aa",
+storageBucket:"prime-flix-ca7aa.firebasestorage.app",
+messagingSenderId:"227931199847",
+appId:"1:227931199847:web:dd25ad57e1bd47aa3237c2"
 };
 
-const app=initializeApp(firebaseConfig);
+const app=initializeApp(config);
 const auth=getAuth(app);
-const provider=new GoogleAuthProvider();
+const db=getFirestore(app);
+const $=id=>document.getElementById(id);
+let itens=[];
 
-const entrar=document.getElementById("entrar");
-const sair=document.getElementById("sair");
-const perfil=document.getElementById("perfil");
-const nome=document.getElementById("nome");
-const foto=document.getElementById("foto");
-const mensagem=document.getElementById("mensagem");
+function urlSegura(url){
+try{
+const u=new URL(url);
+return u.protocol==="https:"?u.href:null;
+}catch{return null}
+}
 
-entrar.disabled=false;
-entrar.textContent="🔐 Entrar com Google";
-
-entrar.addEventListener("click",async()=>{
- try{
-  mensagem.textContent="";
-  await signInWithPopup(auth,provider);
- }catch(error){
-  console.error(error);
-  if(error.code!=="auth/popup-closed-by-user"){
-   mensagem.textContent=
-    "Não foi possível entrar. Verifique o domínio autorizado e tente novamente.";
-  }
- }
-});
-
-sair.addEventListener("click",async()=>{
- try{
-  await signOut(auth);
- }catch(error){
-  mensagem.textContent="Não foi possível sair.";
- }
-});
+$("entrar").disabled=false;
+$("entrar").textContent="🔐 Entrar com Google";
+$("entrar").onclick=async()=>{
+try{
+await signInWithPopup(auth,new GoogleAuthProvider());
+}catch(e){
+if(e.code!=="auth/popup-closed-by-user")
+$("loginStatus").textContent="Erro no login: "+e.code;
+}
+};
+$("sair").onclick=()=>signOut(auth);
 
 onAuthStateChanged(auth,user=>{
- if(user){
-  entrar.style.display="none";
-  perfil.style.display="block";
-  nome.textContent=user.displayName||"Usuário";
-  foto.src=user.photoURL||"";
-  foto.style.display=user.photoURL?"inline":"none";
- }else{
-  entrar.style.display="inline-block";
-  perfil.style.display="none";
- }
+$("entrar").style.display=user?"none":"inline-block";
+$("perfil").style.display=user?"block":"none";
+if(user){
+$("nome").textContent=user.displayName||"Usuário";
+$("foto").src=user.photoURL||"";
+$("foto").hidden=!user.photoURL;
+}
 });
 
-const busca=document.getElementById("busca");
-busca.addEventListener("input",()=>{
- const termo=busca.value.toLowerCase();
- document.querySelectorAll(".card").forEach(card=>{
-  card.style.display=
-   card.textContent.toLowerCase().includes(termo)
-   ?"block":"none";
- });
+function mostrar(){
+const termo=$("busca").value.toLowerCase();
+const lista=itens.filter(x=>
+(x.titulo||"").toLowerCase().includes(termo)||
+(x.categoria||"").toLowerCase().includes(termo)
+);
+$("catalogo").replaceChildren();
+$("status").textContent=lista.length?"": "Nenhum conteúdo encontrado.";
+
+lista.forEach(item=>{
+const card=document.createElement("article");
+card.className="card";
+const capa=urlSegura(item.capa);
+if(capa){
+const img=document.createElement("img");
+img.className="capa";
+img.src=capa;
+img.alt="Capa de "+(item.titulo||"Conteúdo");
+card.append(img);
+}
+const titulo=document.createElement("h3");
+titulo.textContent=item.titulo||"Sem título";
+const categoria=document.createElement("p");
+categoria.textContent=item.categoria||"Conteúdo";
+const descricao=document.createElement("p");
+descricao.textContent=item.descricao||"";
+card.append(titulo,categoria,descricao);
+
+const video=urlSegura(item.video);
+if(video){
+const botao=document.createElement("button");
+botao.textContent="▶ Assistir";
+botao.onclick=()=>{
+$("playerTitulo").textContent=item.titulo||"Assistir";
+$("player").pause();
+$("player").src=video;
+$("playerBox").hidden=false;
+$("playerBox").scrollIntoView({behavior:"smooth"});
+};
+card.append(botao);
+}
+$("catalogo").append(card);
+});
+}
+
+$("busca").addEventListener("input",mostrar);
+
+onSnapshot(collection(db,"conteudos"),snapshot=>{
+itens=snapshot.docs.map(doc=>({id:doc.id,...doc.data()}));
+mostrar();
+},error=>{
+$("status").textContent="Erro ao carregar catálogo: "+error.code;
 });
 </script>
-
 </body>
 </html>
