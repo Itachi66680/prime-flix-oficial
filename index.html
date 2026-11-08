@@ -1,154 +1,24 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Prime Flix</title>
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#09090e"><title>CINEFLIX — Filmes, Séries e Animes</title>
 <style>
-*{box-sizing:border-box}
-body{margin:0;background:#09090f;color:white;font-family:Arial,sans-serif}
-header{background:#171720;padding:24px 16px;text-align:center}
-h1{color:#e50914}
-button{padding:12px 18px;background:#e50914;color:white;border:0;border-radius:9px;cursor:pointer}
-input{width:100%;max-width:480px;padding:14px;border:0;border-radius:10px;margin:15px auto}
-main{padding:20px}
-.catalogo{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:15px}
-.card{background:#20202c;border-radius:12px;overflow:hidden;padding-bottom:15px}
-.capa{width:100%;height:210px;object-fit:cover;background:#30303c}
-.card h3,.card p{margin:12px;overflow-wrap:anywhere}
-.card button{margin:5px 12px}
-#perfil{display:none;margin:15px}
-#foto{width:45px;height:45px;border-radius:50%}
-video{width:100%;max-width:700px;border-radius:12px}
-#playerBox{margin-top:25px}
-#status{color:#aaa}
-</style>
-</head>
-<body>
-<header>
-<h1>🎬 PRIME FLIX</h1>
-<p>Filmes, séries e animes em um só lugar!</p>
-<button id="entrar" disabled>Carregando...</button>
-<div id="perfil">
-<img id="foto" alt="Foto">
-<p id="nome"></p>
-<button id="sair">Sair</button>
-</div>
-<p id="loginStatus"></p>
-<input id="busca" placeholder="🔎 Pesquisar filmes, séries e animes">
-</header>
-<main>
-<h2>🍿 Catálogo</h2>
-<p id="status">Carregando conteúdos...</p>
-<div id="catalogo" class="catalogo"></div>
-<section id="playerBox" hidden>
-<h2 id="playerTitulo"></h2>
-<video id="player" controls playsinline></video>
-</section>
-</main>
-
+:root{color-scheme:dark;--red:#ed182c;--bg:#08090e;--panel:#171a24;--muted:#b4b8c6;--line:#2b2d37}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#fff;font:15px system-ui,-apple-system,Arial,sans-serif}button,input,select{font:inherit}button{cursor:pointer}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #ff727a;outline-offset:2px}a{color:inherit;text-decoration:none}.top{position:sticky;top:0;z-index:12;background:#09090eeb;backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding:14px max(18px,4vw);display:flex;justify-content:space-between;align-items:center;gap:14px}.logo{font-size:clamp(24px,4vw,31px);font-weight:950;color:var(--red);letter-spacing:-1.5px}.account{display:flex;gap:8px;align-items:center}.small{font-size:12px;color:var(--muted)}.btn{border:0;border-radius:10px;padding:11px 15px;background:var(--red);color:white;font-weight:750}.btn.alt{background:#292b36}.btn.ghost{background:#ffffff25}.btn:disabled{opacity:.5}.layout{display:flex;min-height:calc(100dvh - 67px)}nav{width:200px;border-right:1px solid var(--line);padding:24px 12px;display:flex;flex-direction:column;gap:8px;flex-shrink:0}nav button{background:none;border:0;color:#c9cbd4;text-align:left;padding:15px 12px;border-radius:12px;font-weight:700}nav button.on,nav button:hover{color:#fff;background:#27212b}main{min-width:0;flex:1;padding:24px clamp(15px,3vw,38px) 80px}.hero{min-height:290px;position:relative;border-radius:18px;background:linear-gradient(100deg,#1d0c18 0%,#251421 55%,#202330);display:flex;align-items:center;overflow:hidden;margin-bottom:29px;border:1px solid #41303b}.hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.30}.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#120b17 0%,#120b17c4 50%,transparent)}.hero-body{position:relative;z-index:1;padding:35px;max-width:650px}.eyebrow{font-weight:800;letter-spacing:2px;color:#ffb2b9;font-size:12px}.hero h1{font-size:clamp(31px,6vw,53px);margin:13px 0}.hero p{color:#dbd8e0;line-height:1.6;max-width:520px}.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}h2{font-size:clamp(19px,3vw,25px);margin:24px 0 14px}.intro{color:var(--muted);margin-top:0}.search{width:100%;background:#1a1b26;color:#fff;border:1px solid #414250;padding:15px 18px;border-radius:12px;margin:3px 0 18px}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:17px}.card{min-width:0;background:#171922;border:1px solid #282a35;border-radius:13px;overflow:hidden}.imagebox{aspect-ratio:2/3;position:relative;background:linear-gradient(135deg,#312735,#181a25);display:flex;align-items:center;justify-content:center;font-size:42px}.imagebox img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}.tag{position:absolute;top:9px;left:8px;background:#39ed77;color:#06240d;font-size:10px;padding:6px 8px;border-radius:6px;font-weight:1000;letter-spacing:.4px;box-shadow:0 0 14px #1ce76f80}.card-body{padding:12px}.card h3{font-size:15px;line-height:1.3;margin:0 0 8px;overflow-wrap:anywhere}.meta{color:var(--muted);font-size:12px;margin:0 0 12px}.card .actions{margin-top:10px}.card .btn{padding:9px 11px;font-size:12px}.empty{padding:20px 4px;color:var(--muted)}.viewer{margin-top:30px;background:#151720;padding:18px;border-radius:15px;border:1px solid #31343f}.viewer video{width:100%;max-width:850px;max-height:60vh;display:block;border-radius:10px;background:black}.viewer h2{margin-top:0}.viewer p{color:#c5c5cf}.seasons{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}.season{background:#292c36;border:1px solid #444753;color:white;padding:10px 14px;border-radius:9px}.season.on{background:#ab1830}.episode{display:flex;align-items:center;gap:12px;justify-content:space-between;background:#242630;padding:12px;border-radius:10px;margin:8px 0}.episode button{flex-shrink:0}.footer{font-size:12px;color:#9396a3;margin:40px 0}.hidden{display:none!important}@media(max-width:740px){nav{width:100%;height:65px;position:fixed;bottom:0;left:0;right:0;background:#12131c;z-index:20;padding:5px;flex-direction:row;justify-content:space-around;border-right:0;border-top:1px solid #35343b}nav button{font-size:11px;padding:9px 3px;text-align:center;flex:1}main{padding:14px 14px 88px}.hero{min-height:260px}.hero-body{padding:24px}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.top{padding:11px 13px}.small{display:none}.logo{font-size:23px}.btn{padding:9px 11px}}
+</style></head><body><header class="top"><a class="logo" href="./">CINEFLIX</a><div class="account"><span class="small" id="who"></span><button class="btn alt" id="loginBtn">Entrar com Google</button><button class="btn alt hidden" id="logoutBtn">Sair</button></div></header><div class="layout"><nav aria-label="Navegação"><button data-tab="inicio" class="on">⌂ Início</button><button data-tab="pesquisar">⌕ Pesquisar</button><button data-tab="filmes">▶ Filmes</button><button data-tab="series">▣ Séries</button><button data-tab="animes">✦ Animes</button><button data-tab="favoritos">♥ Favoritos</button></nav><main><section id="hero" class="hero"><div class="hero-body"><div class="eyebrow">🎬 SUA CENTRAL DE ENTRETENIMENTO</div><h1 id="heroTitle">Bem-vindo ao CINEFLIX</h1><p id="heroText">Filmes, séries e animes reunidos em um só lugar. Explore o catálogo e escolha o que assistir.</p><div class="actions"><button id="heroWatch" class="btn hidden">▶ Assistir</button><button id="heroExplore" class="btn ghost">Explorar catálogo</button></div></div></section><div id="searchArea" class="hidden"><h2>Pesquisar</h2><input id="search" class="search" placeholder="Qual filme, série ou anime você procura?" type="search" aria-label="Pesquisar títulos"></div><h2 id="listTitle">Catálogo</h2><p id="status" class="intro" role="status">Carregando catálogo…</p><div id="cards" class="grid"></div><section id="viewer" class="viewer hidden"><h2 id="viewerTitle"></h2><p id="viewerDesc"></p><div id="seasonArea" class="hidden"><h3>Temporadas e episódios</h3><div class="seasons" id="seasons"></div><div id="episodes"></div></div><video id="player" playsinline controls preload="metadata"></video></section><p class="footer">CINEFLIX • Reprodução de conteúdos disponibilizados com autorização. <a href="./admin.html">Administração</a></p></main></div>
 <script type="module">
-import {initializeApp} from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
-import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js";
-import {getFirestore,collection,onSnapshot} from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
-
-const config={
-apiKey:"AIzaSyAwdh-gDSLvuT5SLObn7oLU2rMLPcqUcs0",
-authDomain:"prime-flix-ca7aa.firebaseapp.com",
-projectId:"prime-flix-ca7aa",
-storageBucket:"prime-flix-ca7aa.firebasestorage.app",
-messagingSenderId:"227931199847",
-appId:"1:227931199847:web:dd25ad57e1bd47aa3237c2"
-};
-
-const app=initializeApp(config);
-const auth=getAuth(app);
-const db=getFirestore(app);
-const $=id=>document.getElementById(id);
-let itens=[];
-
-function urlSegura(url){
-try{
-const u=new URL(url);
-return u.protocol==="https:"?u.href:null;
-}catch{return null}
-}
-
-$("entrar").disabled=false;
-$("entrar").textContent="🔐 Entrar com Google";
-$("entrar").onclick=async()=>{
-try{
-await signInWithPopup(auth,new GoogleAuthProvider());
-}catch(e){
-if(e.code!=="auth/popup-closed-by-user")
-$("loginStatus").textContent="Erro no login: "+e.code;
-}
-};
-$("sair").onclick=()=>signOut(auth);
-
-onAuthStateChanged(auth,user=>{
-$("entrar").style.display=user?"none":"inline-block";
-$("perfil").style.display=user?"block":"none";
-if(user){
-$("nome").textContent=user.displayName||"Usuário";
-$("foto").src=user.photoURL||"";
-$("foto").hidden=!user.photoURL;
-}
-});
-
-function mostrar(){
-const termo=$("busca").value.toLowerCase();
-const lista=itens.filter(x=>
-(x.titulo||"").toLowerCase().includes(termo)||
-(x.categoria||"").toLowerCase().includes(termo)
-);
-$("catalogo").replaceChildren();
-$("status").textContent=lista.length?"": "Nenhum conteúdo encontrado.";
-
-lista.forEach(item=>{
-const card=document.createElement("article");
-card.className="card";
-const capa=urlSegura(item.capa);
-if(capa){
-const img=document.createElement("img");
-img.className="capa";
-img.src=capa;
-img.alt="Capa de "+(item.titulo||"Conteúdo");
-card.append(img);
-}
-const titulo=document.createElement("h3");
-titulo.textContent=item.titulo||"Sem título";
-const categoria=document.createElement("p");
-categoria.textContent=item.categoria||"Conteúdo";
-const descricao=document.createElement("p");
-descricao.textContent=item.descricao||"";
-card.append(titulo,categoria,descricao);
-
-const video=urlSegura(item.video);
-if(video){
-const botao=document.createElement("button");
-botao.textContent="▶ Assistir";
-botao.onclick=()=>{
-$("playerTitulo").textContent=item.titulo||"Assistir";
-$("player").pause();
-$("player").src=video;
-$("playerBox").hidden=false;
-$("playerBox").scrollIntoView({behavior:"smooth"});
-};
-card.append(botao);
-}
-$("catalogo").append(card);
-});
-}
-
-$("busca").addEventListener("input",mostrar);
-
-onSnapshot(collection(db,"conteudos"),snapshot=>{
-itens=snapshot.docs.map(doc=>({id:doc.id,...doc.data()}));
-mostrar();
-},error=>{
-$("status").textContent="Erro ao carregar catálogo: "+error.code;
-});
-</script>
-</body>
-</html>
+import {initializeApp} from 'https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js';
+import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged} from 'https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js';
+import {getFirestore,collection,onSnapshot} from 'https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js';
+import {firebaseConfig} from './firebase-config.js';
+const $=id=>document.getElementById(id),app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);let items=[],tab='inicio',chosen=null,season=1;const favKey='cineflix-favoritos',favs=new Set(JSON.parse(localStorage.getItem(favKey)||'[]'));
+const https=x=>{try{let u=new URL(x);return u.protocol==='https:'?u.href:null}catch{return null}};
+$('loginBtn').onclick=async()=>{try{await signInWithPopup(auth,new GoogleAuthProvider())}catch(e){if(e.code!=='auth/popup-closed-by-user')alert('Não foi possível entrar: '+e.code)}};
+$('logoutBtn').onclick=()=>signOut(auth);
+onAuthStateChanged(auth,u=>{$('loginBtn').classList.toggle('hidden',!!u);$('logoutBtn').classList.toggle('hidden',!u);$('who').textContent=u?'Olá, '+(u.displayName||'visitante'):''});
+function normCat(x){return String(x||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')}
+function episodes(x){return Array.isArray(x.episodios)?x.episodios.filter(e=>e&&Number(e.temporada)>=1&&Number(e.numero)>=1).sort((a,b)=>Number(a.temporada)-Number(b.temporada)||Number(a.numero)-Number(b.numero)):[]}
+function showVideo(url,title){const safe=https(url);if(!safe)return alert('Este vídeo ainda não tem um link HTTPS autorizado.');$('player').pause();$('player').src=safe;$('viewerTitle').textContent=title;$('viewer').classList.remove('hidden');$('viewer').scrollIntoView({behavior:'smooth',block:'start'})}
+function openItem(x){chosen=x;season=1;$('viewerTitle').textContent=x.titulo||'Sem título';$('viewerDesc').textContent=x.descricao||'';const eps=episodes(x),show=eps.length>0;$('seasonArea').classList.toggle('hidden',!show);$('player').pause();$('player').removeAttribute('src');$('player').load();if(show)showSeasons(x,eps);else if(https(x.video))showVideo(x.video,x.titulo);else $('viewer').classList.remove('hidden');$('viewer').scrollIntoView({behavior:'smooth'})}
+function showSeasons(x,eps){let seasons=[...new Set(eps.map(e=>Number(e.temporada)))].sort((a,b)=>a-b);if(!seasons.includes(season))season=seasons[0];$('seasons').replaceChildren();for(let s of seasons){let b=document.createElement('button');b.className='season'+(s===season?' on':'');b.textContent='Temporada '+s;b.onclick=()=>{season=s;showSeasons(x,eps)};$('seasons').append(b)}$('episodes').replaceChildren();for(let ep of eps.filter(e=>Number(e.temporada)===season)){let row=document.createElement('div');row.className='episode';let text=document.createElement('span');text.textContent='Episódio '+ep.numero+(ep.titulo?' — '+ep.titulo:'');let b=document.createElement('button');b.className='btn';b.textContent='▶ Assistir';b.disabled=!https(ep.video);b.onclick=()=>showVideo(ep.video,(x.titulo||'')+' — T'+season+' E'+ep.numero);row.append(text,b);$('episodes').append(row)}}
+function paint(){let query=$('search').value.trim().toLowerCase();$('searchArea').classList.toggle('hidden',tab!=='pesquisar');$('hero').classList.toggle('hidden',tab!=='inicio');const titles={inicio:'Explore o catálogo',pesquisar:'Resultados da pesquisa',filmes:'Filmes',series:'Séries',animes:'Animes',favoritos:'Meus favoritos'};$('listTitle').textContent=titles[tab];let list=items.filter(x=>{let cat=normCat(x.categoria);return (tab==='inicio'||tab==='pesquisar'||tab==='favoritos'||(tab==='filmes'&&cat==='filme')||(tab==='series'&&cat==='serie')||(tab==='animes'&&cat==='anime'))&&(tab!=='favoritos'||favs.has(x.id))&&(!query||tab!=='pesquisar'||(x.titulo+' '+(x.descricao||'')+' '+cat).toLowerCase().includes(query))});$('cards').replaceChildren();$('status').textContent=list.length?list.length+' título(s) encontrado(s).':items.length?'Nenhum título nesta seção.':'Nenhum conteúdo cadastrado ainda.';
+for(let x of list){let card=document.createElement('article');card.className='card';let pic=document.createElement('div');pic.className='imagebox';pic.textContent='🎬';let u=https(x.capa);if(u){let img=document.createElement('img');img.src=u;img.alt='Capa de '+(x.titulo||'');img.loading='lazy';pic.append(img)}if(x.lancamento===true){let tag=document.createElement('span');tag.className='tag';tag.textContent='LANÇAMENTO';pic.append(tag)}let body=document.createElement('div');body.className='card-body';let name=document.createElement('h3');name.textContent=x.titulo||'Sem título';let meta=document.createElement('p');meta.className='meta';meta.textContent=x.categoria||'Conteúdo';let acts=document.createElement('div');acts.className='actions';let watch=document.createElement('button');watch.className='btn';watch.textContent='▶ Ver detalhes';watch.onclick=()=>openItem(x);let fav=document.createElement('button');fav.className='btn alt';fav.textContent=favs.has(x.id)?'♥ Salvo':'♡ Favorito';fav.onclick=()=>{favs.has(x.id)?favs.delete(x.id):favs.add(x.id);localStorage.setItem(favKey,JSON.stringify([...favs]));paint()};acts.append(watch,fav);body.append(name,meta,acts);card.append(pic,body);$('cards').append(card)}}
+for(let b of document.querySelectorAll('nav button'))b.onclick=()=>{tab=b.dataset.tab;document.querySelectorAll('nav button').forEach(v=>v.classList.toggle('on',v===b));paint();if(tab==='pesquisar')$('search').focus();window.scrollTo({top:0,behavior:'smooth'})};$('search').oninput=paint;$('heroExplore').onclick=()=>document.getElementById('listTitle').scrollIntoView({behavior:'smooth'});
+onSnapshot(collection(db,'conteudos'),snap=>{items=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>String(a.titulo||'').localeCompare(String(b.titulo||''),'pt-BR'));let featured=items.find(x=>x.lancamento)||items[0];if(featured){$('heroTitle').textContent=featured.titulo||'Em destaque';$('heroText').textContent=featured.descricao||'Confira este título no catálogo.';let hero=$('hero');hero.querySelector('img')?.remove();if(https(featured.capa)){let im=document.createElement('img');im.src=featured.capa;im.alt='';hero.prepend(im)}$('heroWatch').classList.remove('hidden');$('heroWatch').onclick=()=>openItem(featured)}paint()},e=>{$('status').textContent='Não foi possível carregar o catálogo: '+e.code});
+</script></body></html>
