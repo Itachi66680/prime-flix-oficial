@@ -5,7 +5,7 @@
 position:fixed;
 inset:0;
 z-index:99999;
-background:linear-gradient(145deg,#08090e,#260710);
+background: #100000 url('cineflix-boas-vindas.png') center center / contain no-repeat;
 display:flex;
 flex-direction:column;
 align-items:center;
@@ -13,22 +13,22 @@ justify-content:center;
 text-align:center;
 padding:25px;
 ">
-<h1 style="color:#ed182c;font-size:48px;">
+<h1 style="display:none;. color:#ed182c;font-size:48px;">
 CINEFLIX
 </h1>
+  
+<h2 style="display:none;">Bem-vindo ao CINEFLIX!</h2>
 
-<h2>Bem-vindo ao CINEFLIX!</h2>
-
-<p>Filmes, séries e animes em um só lugar.</p>
+<p style="display:none;">Filmes, séries e animes em um só lugar.</p>
 
 <button id="welcomeGoogle" style="
-background:#ed182c;
-color:white;
+background:transparent;
+color:transparent;
 border:0;
 border-radius:10px;
 padding:16px 28px;
 font-size:17px;
-font-weight:bold;
+font-weight:bold;position:absolute;top:calc(50% + min(17vw,11.3vh));left:50%;transform:translateX(-50%);width:min(63vw,42vh);height:min(12vw,8vh);padding:0;cursor:pointer;
 ">
 Entrar com Google
 </button>
