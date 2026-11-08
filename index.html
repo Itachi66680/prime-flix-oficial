@@ -1,80 +1,154 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="theme-color" content="#0b0b12" />
-<title>Prime Flix — Filmes, Séries e Animes</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prime Flix</title>
 <style>
-:root{--bg:#090a11;--panel:#171923;--panel2:#202332;--red:#e50914;--muted:#acb1c2;--line:#323648}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:#fff;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-button,input,select{font:inherit}button{cursor:pointer;border:0}button:disabled{opacity:.5;cursor:not-allowed}
-header{position:sticky;top:0;z-index:10;display:flex;gap:14px;align-items:center;justify-content:space-between;padding:15px max(18px,calc((100vw - 1150px)/2));background:#11121aee;backdrop-filter:blur(12px);border-bottom:1px solid #242631}
-.logo{font-size:clamp(23px,4vw,31px);font-weight:900;color:var(--red);letter-spacing:-1px;white-space:nowrap}.actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
-.btn{background:var(--red);color:white;border-radius:9px;padding:10px 14px;font-weight:700}.btn.secondary{background:#282b39}.btn.ghost{background:transparent;border:1px solid var(--line)}.btn.small{font-size:13px;padding:8px 10px}
-.hero{padding:68px 20px 56px;background:radial-gradient(ellipse at 80% 10%,#56121e 0,transparent 50%),linear-gradient(130deg,#141622,#090a11);text-align:center;border-bottom:1px solid #20222b}.hero h1{font-size:clamp(30px,6vw,56px);line-height:1.12;margin:0 0 13px}.hero h1 span{color:var(--red)}.hero p{color:var(--muted);max-width:590px;margin:0 auto 26px;font-size:17px}
-.container{max-width:1190px;padding:25px 18px 80px;margin:auto}.filters{display:grid;grid-template-columns:1fr auto;gap:12px;margin-bottom:26px}#busca{min-width:0;background:#20222e;color:white;border:1px solid #363948;border-radius:10px;padding:14px 16px}#tipo{background:#20222e;color:white;border:1px solid #363948;border-radius:10px;padding:0 14px}
-h2{margin:24px 0 17px;font-size:24px}.catalogo{display:grid;grid-template-columns:repeat(auto-fill,minmax(156px,1fr));gap:18px}.card{background:var(--panel);border:1px solid #282b39;border-radius:12px;overflow:hidden;display:flex;flex-direction:column}.poster{width:100%;aspect-ratio:2/3;object-fit:cover;background:linear-gradient(135deg,#262738,#521722)}.poster-fallback{display:grid;place-items:center;text-align:center;padding:12px;font-size:21px;font-weight:800}.card-content{padding:12px;display:flex;flex:1;flex-direction:column;gap:8px}.card h3{font-size:15px;margin:0;overflow-wrap:anywhere}.meta{font-size:12px;color:#bfc2cc}.card .btn{width:100%;margin-top:auto}.empty{text-align:center;color:var(--muted);padding:35px 10px}.hidden{display:none!important}
-.modal{position:fixed;inset:0;z-index:20;background:#000b;display:grid;place-items:center;padding:14px}.modal-box{width:min(850px,100%);max-height:94vh;overflow:auto;border-radius:15px;background:#171923;border:1px solid #393c49;padding:18px}.modal-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.modal-head h2{margin:0 0 12px}.close{background:#343747;color:white;border-radius:8px;padding:7px 12px;font-size:20px}.player{width:100%;aspect-ratio:16/9;background:#000;border-radius:9px;margin:12px 0}.field{display:flex;flex-direction:column;gap:6px;margin:12px 0}.field label{color:#d8d9df;font-size:14px}.field input,.field select{background:#0e1019;border:1px solid #474a59;border-radius:8px;padding:12px;color:white;width:100%}.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.notice{margin:10px 0;color:#ffcccc;font-size:14px}.muted{color:var(--muted)}.admin-item{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 0;border-bottom:1px solid #343747}.admin-item strong{overflow-wrap:anywhere}.admin-item .row{flex-shrink:0}
-footer{border-top:1px solid #272937;text-align:center;padding:25px 18px;color:var(--muted);font-size:13px}@media(max-width:530px){header{padding:12px}.logo{font-size:23px}.hero{padding:52px 16px}.catalogo{grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.filters{grid-template-columns:1fr}.card-content{padding:10px}.actions .btn{font-size:12px;padding:8px}.admin-item{flex-wrap:wrap}}
+*{box-sizing:border-box}
+body{margin:0;background:#09090f;color:white;font-family:Arial,sans-serif}
+header{background:#171720;padding:24px 16px;text-align:center}
+h1{color:#e50914}
+button{padding:12px 18px;background:#e50914;color:white;border:0;border-radius:9px;cursor:pointer}
+input{width:100%;max-width:480px;padding:14px;border:0;border-radius:10px;margin:15px auto}
+main{padding:20px}
+.catalogo{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:15px}
+.card{background:#20202c;border-radius:12px;overflow:hidden;padding-bottom:15px}
+.capa{width:100%;height:210px;object-fit:cover;background:#30303c}
+.card h3,.card p{margin:12px;overflow-wrap:anywhere}
+.card button{margin:5px 12px}
+#perfil{display:none;margin:15px}
+#foto{width:45px;height:45px;border-radius:50%}
+video{width:100%;max-width:700px;border-radius:12px}
+#playerBox{margin-top:25px}
+#status{color:#aaa}
 </style>
 </head>
 <body>
-<header><div class="logo">▶ PRIME FLIX</div><div class="actions"><span id="usuario" class="muted" style="font-size:12px"></span><button id="loginBtn" class="btn small">Entrar com Google</button><button id="sairBtn" class="btn small secondary hidden">Sair</button><button id="adminBtn" class="btn small ghost hidden">⚙️ Admin</button></div></header>
-<section class="hero"><h1>Seu universo de <span>entretenimento</span></h1><p>Explore filmes, séries e animes publicados no Prime Flix. Assista apenas a vídeos disponibilizados com autorização.</p><button class="btn" onclick="document.querySelector('#catalogo').scrollIntoView({behavior:'smooth'})">Explorar catálogo</button></section>
-<main class="container"><div class="filters"><input id="busca" type="search" placeholder="🔎 Pesquisar filme, série ou anime..." aria-label="Pesquisar conteúdo"/><select id="tipo" aria-label="Filtrar categoria"><option value="Todos">Todos</option><option value="Filme">Filmes</option><option value="Série">Séries</option><option value="Anime">Animes</option></select></div><h2>🎞️ Catálogo</h2><div id="status" class="notice" role="status"></div><div id="catalogo" class="catalogo"></div><p id="vazio" class="empty">Nenhum título publicado ainda.</p></main>
-<footer>© <span id="ano"></span> Prime Flix • Publique apenas conteúdo que você possui ou tem permissão para distribuir.</footer>
-<div id="videoModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="videoTitle"><div class="modal-box"><div class="modal-head"><h2 id="videoTitle">Assistir</h2><button id="fechaVideo" class="close" aria-label="Fechar">×</button></div><div id="playerContainer"></div><p id="videoDesc" class="muted"></p></div></div>
-<div id="adminModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="adminTitle"><div class="modal-box"><div class="modal-head"><h2 id="adminTitle">👑 Painel do administrador</h2><button id="fechaAdmin" class="close" aria-label="Fechar">×</button></div><p class="muted">Cadastre vídeos próprios ou autorizados. Use URL direta HTTPS de MP4 ou WebM que permita reprodução no navegador.</p><form id="formAdmin"><input id="editId" type="hidden"/><div class="field"><label for="titulo">Título</label><input id="titulo" maxlength="120" required placeholder="Ex.: Meu curta-metragem"/></div><div class="field"><label for="categoria">Categoria</label><select id="categoria"><option>Filme</option><option>Série</option><option>Anime</option></select></div><div class="field"><label for="anoFilme">Ano (opcional)</label><input id="anoFilme" type="number" min="1900" max="2100" placeholder="2026"/></div><div class="field"><label for="imagem">URL da capa HTTPS (opcional)</label><input id="imagem" type="url" placeholder="https://exemplo.com/capa.jpg"/></div><div class="field"><label for="video">URL direta do vídeo HTTPS (MP4 ou WebM)</label><input id="video" type="url" required placeholder="https://exemplo.com/video.mp4"/></div><div class="field"><label for="descricao">Descrição (opcional)</label><input id="descricao" maxlength="300" placeholder="Sobre o título"/></div><div class="row"><button type="submit" class="btn" id="salvar">Publicar título</button><button type="button" class="btn secondary" id="limpar">Limpar</button></div><p id="adminStatus" class="notice" role="status"></p></form><h2>Itens publicados</h2><div id="adminLista"></div></div></div>
-<script type="module">
-// PASSO 1: Cole os dados do seu projeto do Firebase abaixo.
-// Firebase Console → Configurações do projeto → Seus apps → Configuração do SDK.
-const firebaseConfig = {
-  apiKey: "COLE_SUA_API_KEY",
-  authDomain: "COLE_SEU_PROJECT_ID.firebaseapp.com",
-  projectId: "COLE_SEU_PROJECT_ID",
-  storageBucket: "COLE_SEU_PROJECT_ID.firebasestorage.app",
-  messagingSenderId: "COLE_SEU_SENDER_ID",
-  appId: "COLE_SEU_APP_ID"
-};
-// PASSO 2: Substitua pelo UID da sua conta Google visto em Authentication → Users.
-// Use o MESMO UID nas regras do Firestore (arquivo firestore.rules).
-const ADMIN_UID = "COLE_SEU_UID_AQUI";
+<header>
+<h1>🎬 PRIME FLIX</h1>
+<p>Filmes, séries e animes em um só lugar!</p>
+<button id="entrar" disabled>Carregando...</button>
+<div id="perfil">
+<img id="foto" alt="Foto">
+<p id="nome"></p>
+<button id="sair">Sair</button>
+</div>
+<p id="loginStatus"></p>
+<input id="busca" placeholder="🔎 Pesquisar filmes, séries e animes">
+</header>
+<main>
+<h2>🍿 Catálogo</h2>
+<p id="status">Carregando conteúdos...</p>
+<div id="catalogo" class="catalogo"></div>
+<section id="playerBox" hidden>
+<h2 id="playerTitulo"></h2>
+<video id="player" controls playsinline></video>
+</section>
+</main>
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
-const $ = id => document.getElementById(id);
-const configOk = !Object.values(firebaseConfig).some(v => String(v).includes("COLE_"));
-let auth, db, user = null, itens = [];
-$('ano').textContent=new Date().getFullYear();
-function aviso(msg){$('status').textContent=msg}
-function modal(id,abrir){$(id).classList.toggle('hidden',!abrir)}
-function eAdmin(){return user && user.uid === ADMIN_UID && ADMIN_UID !== 'COLE_SEU_UID_AQUI'}
-function urlHttps(s){try{let u=new URL(s);return u.protocol==='https:'?u.href:null}catch{return null}}
-function videoValido(s){const u=urlHttps(s);return u && /\.(mp4|webm)(\?|#|$)/i.test(new URL(u).pathname) ? u : null}
-function texto(tag,conteudo,cls){const el=document.createElement(tag);if(cls)el.className=cls;el.textContent=conteudo;return el}
-function render(){const filtro=$('tipo').value,q=$('busca').value.trim().toLocaleLowerCase('pt-BR');const lista=itens.filter(x=>(filtro==='Todos'||x.categoria===filtro)&&String(x.titulo||'').toLocaleLowerCase('pt-BR').includes(q));$('catalogo').replaceChildren();$('vazio').classList.toggle('hidden',!!lista.length);for(const item of lista){const card=document.createElement('article');card.className='card';const imgurl=urlHttps(item.imagem||'');if(imgurl){const img=document.createElement('img');img.className='poster';img.alt='Capa de '+item.titulo;img.loading='lazy';img.src=imgurl;img.onerror=()=>img.replaceWith(texto('div','🎬 '+item.titulo,'poster poster-fallback'));card.append(img)}else card.append(texto('div','🎬 '+item.titulo,'poster poster-fallback'));const body=document.createElement('div');body.className='card-content';body.append(texto('h3',item.titulo||'Sem título'),texto('span',(item.categoria||'Vídeo')+(item.ano?' • '+item.ano:''),'meta'));const btn=texto('button','▶ Assistir','btn');btn.addEventListener('click',()=>assistir(item));body.append(btn);card.append(body);$('catalogo').append(card)}renderAdmin()}
-function assistir(item){const url=videoValido(item.video||'');$('videoTitle').textContent=item.titulo||'Assistir';$('videoDesc').textContent=item.descricao||'';$('playerContainer').replaceChildren();if(!url){$('playerContainer').append(texto('p','O link do vídeo é inválido. O administrador deve informar uma URL direta HTTPS para MP4 ou WebM.','notice'))}else{const video=document.createElement('video');video.className='player';video.controls=true;video.playsInline=true;video.preload='metadata';video.src=url;$('playerContainer').append(video)}modal('videoModal',true)}
-function fechaVideo(){const v=$('playerContainer').querySelector('video');if(v){v.pause();v.removeAttribute('src');v.load()}modal('videoModal',false)}
-$('fechaVideo').onclick=fechaVideo;$('fechaAdmin').onclick=()=>modal('adminModal',false);
-$('busca').addEventListener('input',render);$('tipo').addEventListener('change',render);
-function renderAdmin(){if(!eAdmin())return;$('adminLista').replaceChildren();if(!itens.length)$('adminLista').append(texto('p','Ainda não há títulos.','muted'));for(const item of itens){const linha=document.createElement('div');linha.className='admin-item';linha.append(texto('strong',item.titulo||'Sem título'));const botoes=document.createElement('div');botoes.className='row';const editar=texto('button','Editar','btn small secondary');editar.onclick=()=>{for(const [campo,chave] of [['editId','id'],['titulo','titulo'],['categoria','categoria'],['anoFilme','ano'],['imagem','imagem'],['video','video'],['descricao','descricao']])$(campo).value=item[chave]||'';$('salvar').textContent='Salvar alterações';$('adminModal').querySelector('form').scrollIntoView({behavior:'smooth'})};const excluir=texto('button','Excluir','btn small');excluir.onclick=async()=>{if(!confirm('Excluir este título do catálogo?'))return;try{await deleteDoc(doc(db,'titulos',item.id));$('adminStatus').textContent='Título excluído.'}catch(e){$('adminStatus').textContent='Não foi possível excluir: '+e.message}};botoes.append(editar,excluir);linha.append(botoes);$('adminLista').append(linha)}}
-function limpa(){ $('formAdmin').reset();$('editId').value='';$('salvar').textContent='Publicar título'}$('limpar').onclick=limpa;
-$('formAdmin').onsubmit=async e=>{e.preventDefault();if(!eAdmin()||!db)return;const dados={titulo:$('titulo').value.trim(),categoria:$('categoria').value,ano:$('anoFilme').value.trim(),imagem:$('imagem').value.trim(),video:$('video').value.trim(),descricao:$('descricao').value.trim()};if(!videoValido(dados.video)){ $('adminStatus').textContent='O vídeo precisa de URL HTTPS direta terminada em .mp4 ou .webm';return}if(dados.imagem&&!urlHttps(dados.imagem)){$('adminStatus').textContent='A capa precisa de URL HTTPS válida';return}const id=$('editId').value;$('salvar').disabled=true;try{if(id)await updateDoc(doc(db,'titulos',id),dados);else await addDoc(collection(db,'titulos'),{...dados,criadoEm:serverTimestamp()});$('adminStatus').textContent=id?'Título atualizado!':'Título publicado!';limpa()}catch(err){$('adminStatus').textContent='Erro ao salvar: '+err.message}finally{$('salvar').disabled=false}};
-$('adminBtn').onclick=()=>{if(eAdmin()){renderAdmin();modal('adminModal',true)}};
-$('sairBtn').onclick=async()=>{try{await signOut(auth)}catch(e){aviso('Erro ao sair: '+e.message)}};
-if(!configOk){aviso('⚠️ Antes de publicar, configure os dados do Firebase dentro do index.html.');$('loginBtn').disabled=true}
-else{
- try{
-  const app=initializeApp(firebaseConfig);auth=getAuth(app);db=getFirestore(app);
-  $('loginBtn').onclick=async()=>{const prov=new GoogleAuthProvider();try{await signInWithPopup(auth,prov)}catch(err){if(['auth/popup-blocked','auth/operation-not-supported-in-this-environment'].includes(err.code)){try{await signInWithRedirect(auth,prov)}catch(e){aviso('Login: '+e.message)}}else if(err.code!=='auth/popup-closed-by-user')aviso('Login: '+err.message)}};
-  getRedirectResult(auth).catch(e=>aviso('Login: '+e.message));
-  onAuthStateChanged(auth,u=>{user=u;$('usuario').textContent=u?(u.displayName||u.email||'Conectado'):'';$('loginBtn').classList.toggle('hidden',!!u);$('sairBtn').classList.toggle('hidden',!u);$('adminBtn').classList.toggle('hidden',!eAdmin());if(!eAdmin())modal('adminModal',false)});
-  onSnapshot(collection(db,'titulos'),snap=>{itens=snap.docs.map(d=>({id:d.id,...d.data()}));itens.sort((a,b)=>(b.criadoEm?.seconds||0)-(a.criadoEm?.seconds||0));aviso('');render()},err=>{aviso('Não foi possível carregar o catálogo: '+err.message)});
- }catch(err){aviso('Erro na configuração do Firebase: '+err.message)}
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
+import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js";
+import {getFirestore,collection,onSnapshot} from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
+
+const config={
+apiKey:"AIzaSyAwdh-gDSLvuT5SLObn7oLU2rMLPcqUcs0",
+authDomain:"prime-flix-ca7aa.firebaseapp.com",
+projectId:"prime-flix-ca7aa",
+storageBucket:"prime-flix-ca7aa.firebasestorage.app",
+messagingSenderId:"227931199847",
+appId:"1:227931199847:web:dd25ad57e1bd47aa3237c2"
+};
+
+const app=initializeApp(config);
+const auth=getAuth(app);
+const db=getFirestore(app);
+const $=id=>document.getElementById(id);
+let itens=[];
+
+function urlSegura(url){
+try{
+const u=new URL(url);
+return u.protocol==="https:"?u.href:null;
+}catch{return null}
 }
+
+$("entrar").disabled=false;
+$("entrar").textContent="🔐 Entrar com Google";
+$("entrar").onclick=async()=>{
+try{
+await signInWithPopup(auth,new GoogleAuthProvider());
+}catch(e){
+if(e.code!=="auth/popup-closed-by-user")
+$("loginStatus").textContent="Erro no login: "+e.code;
+}
+};
+$("sair").onclick=()=>signOut(auth);
+
+onAuthStateChanged(auth,user=>{
+$("entrar").style.display=user?"none":"inline-block";
+$("perfil").style.display=user?"block":"none";
+if(user){
+$("nome").textContent=user.displayName||"Usuário";
+$("foto").src=user.photoURL||"";
+$("foto").hidden=!user.photoURL;
+}
+});
+
+function mostrar(){
+const termo=$("busca").value.toLowerCase();
+const lista=itens.filter(x=>
+(x.titulo||"").toLowerCase().includes(termo)||
+(x.categoria||"").toLowerCase().includes(termo)
+);
+$("catalogo").replaceChildren();
+$("status").textContent=lista.length?"": "Nenhum conteúdo encontrado.";
+
+lista.forEach(item=>{
+const card=document.createElement("article");
+card.className="card";
+const capa=urlSegura(item.capa);
+if(capa){
+const img=document.createElement("img");
+img.className="capa";
+img.src=capa;
+img.alt="Capa de "+(item.titulo||"Conteúdo");
+card.append(img);
+}
+const titulo=document.createElement("h3");
+titulo.textContent=item.titulo||"Sem título";
+const categoria=document.createElement("p");
+categoria.textContent=item.categoria||"Conteúdo";
+const descricao=document.createElement("p");
+descricao.textContent=item.descricao||"";
+card.append(titulo,categoria,descricao);
+
+const video=urlSegura(item.video);
+if(video){
+const botao=document.createElement("button");
+botao.textContent="▶ Assistir";
+botao.onclick=()=>{
+$("playerTitulo").textContent=item.titulo||"Assistir";
+$("player").pause();
+$("player").src=video;
+$("playerBox").hidden=false;
+$("playerBox").scrollIntoView({behavior:"smooth"});
+};
+card.append(botao);
+}
+$("catalogo").append(card);
+});
+}
+
+$("busca").addEventListener("input",mostrar);
+
+onSnapshot(collection(db,"conteudos"),snapshot=>{
+itens=snapshot.docs.map(doc=>({id:doc.id,...doc.data()}));
+mostrar();
+},error=>{
+$("status").textContent="Erro ao carregar catálogo: "+error.code;
+});
 </script>
 </body>
 </html>
