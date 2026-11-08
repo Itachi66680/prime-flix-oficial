@@ -2,67 +2,177 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Prime Flix</title>
-  <style>
-    body {
-      margin: 0;
-      background: #0b0b12;
-      color: white;
-      font-family: Arial, sans-serif;
-    }
-    header {
-      background: #171722;
-      padding: 20px;
-      text-align: center;
-    }
-    h1 { color: #e50914; }
-    input {
-      padding: 12px;
-      border-radius: 8px;
-      border: none;
-      width: 85%;
-      max-width: 450px;
-    }
-    main { padding: 20px; }
-    .catalogo {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 15px;
-    }
-    .card {
-      background: #20202e;
-      border-radius: 12px;
-      padding: 20px;
-      text-align: center;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prime Flix</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;background:#09090f;color:white;
+ font-family:Arial,sans-serif
+}
+header{
+ background:#171720;padding:25px 16px;
+ text-align:center
+}
+h1{color:#e50914;font-size:35px}
+button{
+ background:#e50914;color:white;border:0;
+ padding:13px 20px;border-radius:10px;
+ cursor:pointer;font-weight:bold
+}
+button:hover{background:#b80710}
+#loginArea{margin:20px 0}
+#perfil img{
+ width:48px;height:48px;
+ border-radius:50%;vertical-align:middle
+}
+#perfil{display:none}
+#nome{margin:10px}
+input{
+ width:100%;max-width:500px;padding:15px;
+ border:0;border-radius:10px;
+ font-size:16px
+}
+main{padding:20px}
+.catalogo{
+ display:grid;
+ grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+ gap:15px
+}
+.card{
+ background:#20202d;padding:24px 12px;
+ border-radius:14px;text-align:center;
+ font-size:19px
+}
+section{margin-bottom:30px}
+#mensagem{font-size:14px;color:#ddd}
+footer{
+ padding:25px;text-align:center;
+ color:#aaa;font-size:13px
+}
+</style>
 </head>
 <body>
-  <header>
-    <h1>🎬 PRIME FLIX</h1>
-    <p>Filmes, séries e animes em um só lugar!</p>
-    <input id="busca" placeholder="🔎 Pesquisar..." oninput="pesquisar()">
-  </header>
 
-  <main>
-    <h2>🍿 Catálogo</h2>
-    <div class="catalogo" id="catalogo">
-      <div class="card">🎥 Filmes</div>
-      <div class="card">📺 Séries</div>
-      <div class="card">⛩️ Animes</div>
-    </div>
-  </main>
+<header>
+<h1>🎬 PRIME FLIX</h1>
+<p>Filmes, séries e animes em um só lugar!</p>
 
-  <script>
-    function pesquisar() {
-      const termo = document.getElementById("busca").value.toLowerCase();
-      document.querySelectorAll(".card").forEach(card => {
-        card.style.display = card.textContent.toLowerCase().includes(termo)
-          ? "block" : "none";
-      });
-    }
-  </script>
+<div id="loginArea">
+<button id="entrar" disabled>Carregando login...</button>
+<div id="perfil">
+<img id="foto" alt="Foto do usuário">
+<p id="nome"></p>
+<button id="sair">Sair da conta</button>
+</div>
+<p id="mensagem"></p>
+</div>
+
+<input id="busca" type="search"
+placeholder="🔎 Pesquisar..." aria-label="Pesquisar no catálogo">
+</header>
+
+<main>
+<h2>🍿 Catálogo</h2>
+
+<div class="catalogo" id="catalogo">
+<div class="card">🎥 Filmes</div>
+<div class="card">📺 Séries</div>
+<div class="card">⛩️ Animes</div>
+</div>
+
+<section>
+<h2>🔥 Em destaque</h2>
+<p>Novidades em breve!</p>
+</section>
+</main>
+
+<footer>
+© 2026 Prime Flix
+<p>Conteúdos disponibilizados com autorização.</p>
+</footer>
+
+<script type="module">
+import { initializeApp } from
+"https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
+
+import {
+ getAuth,
+ GoogleAuthProvider,
+ signInWithPopup,
+ signOut,
+ onAuthStateChanged
+} from
+"https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js";
+
+const firebaseConfig = {
+ apiKey:"AIzaSyAwdh-gDSLvuT5SLObn7oLU2rMLPcqUcs0",
+ authDomain:"prime-flix-ca7aa.firebaseapp.com",
+ projectId:"prime-flix-ca7aa",
+ storageBucket:"prime-flix-ca7aa.firebasestorage.app",
+ messagingSenderId:"227931199847",
+ appId:"1:227931199847:web:dd25ad57e1bd47aa3237c2"
+};
+
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+const provider=new GoogleAuthProvider();
+
+const entrar=document.getElementById("entrar");
+const sair=document.getElementById("sair");
+const perfil=document.getElementById("perfil");
+const nome=document.getElementById("nome");
+const foto=document.getElementById("foto");
+const mensagem=document.getElementById("mensagem");
+
+entrar.disabled=false;
+entrar.textContent="🔐 Entrar com Google";
+
+entrar.addEventListener("click",async()=>{
+ try{
+  mensagem.textContent="";
+  await signInWithPopup(auth,provider);
+ }catch(error){
+  console.error(error);
+  if(error.code!=="auth/popup-closed-by-user"){
+   mensagem.textContent=
+    "Não foi possível entrar. Verifique o domínio autorizado e tente novamente.";
+  }
+ }
+});
+
+sair.addEventListener("click",async()=>{
+ try{
+  await signOut(auth);
+ }catch(error){
+  mensagem.textContent="Não foi possível sair.";
+ }
+});
+
+onAuthStateChanged(auth,user=>{
+ if(user){
+  entrar.style.display="none";
+  perfil.style.display="block";
+  nome.textContent=user.displayName||"Usuário";
+  foto.src=user.photoURL||"";
+  foto.style.display=user.photoURL?"inline":"none";
+ }else{
+  entrar.style.display="inline-block";
+  perfil.style.display="none";
+ }
+});
+
+const busca=document.getElementById("busca");
+busca.addEventListener("input",()=>{
+ const termo=busca.value.toLowerCase();
+ document.querySelectorAll(".card").forEach(card=>{
+  card.style.display=
+   card.textContent.toLowerCase().includes(termo)
+   ?"block":"none";
+ });
+});
+</script>
+
 </body>
 </html>
