@@ -1,0 +1,68 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prime Flix</title>
+  <style>
+    body {
+      margin: 0;
+      background: #0b0b12;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+    header {
+      background: #171722;
+      padding: 20px;
+      text-align: center;
+    }
+    h1 { color: #e50914; }
+    input {
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      width: 85%;
+      max-width: 450px;
+    }
+    main { padding: 20px; }
+    .catalogo {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+    }
+    .card {
+      background: #20202e;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🎬 PRIME FLIX</h1>
+    <p>Filmes, séries e animes em um só lugar!</p>
+    <input id="busca" placeholder="🔎 Pesquisar..." oninput="pesquisar()">
+  </header>
+
+  <main>
+    <h2>🍿 Catálogo</h2>
+    <div class="catalogo" id="catalogo">
+      <div class="card">🎥 Filmes</div>
+      <div class="card">📺 Séries</div>
+      <div class="card">⛩️ Animes</div>
+    </div>
+  </main>
+
+  <script>
+    function pesquisar() {
+      const termo = document.getElementById("busca").value.toLowerCase();
+      document.querySelectorAll(".card").forEach(card => {
+        card.style.display = card.textContent.toLowerCase().includes(termo)
+          ? "block" : "none";
+      });
+    }
+  </script>
+</body>
+</html>
