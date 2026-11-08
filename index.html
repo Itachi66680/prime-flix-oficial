@@ -103,6 +103,14 @@ mostrar();
 
   import { initializeApp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
 
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js";
+
   const firebaseConfig = {
 
     apiKey: "AIzaSyAwdh-gDSLvuT5SLObn7oLU2rMLPcqUcs0",
@@ -120,6 +128,42 @@ mostrar();
   };
 
   const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+
+const entrar = document.createElement("button");
+entrar.textContent = "🔐 Entrar com Google";
+entrar.style.cssText = "background:#f43652;color:white;padding:12px;border:0;border-radius:8px;margin:12px;cursor:pointer";
+
+const sair = document.createElement("button");
+sair.textContent = "Sair";
+sair.style.cssText = entrar.style.cssText;
+
+const usuario = document.createElement("span");
+usuario.style.color = "white";
+
+const areaLogin = document.createElement("div");
+areaLogin.append(entrar, usuario, sair);
+document.body.prepend(areaLogin);
+
+entrar.onclick = async () => {
+  try {
+    await signInWithPopup(auth, provider);
+  } catch (erro) {
+    alert("Não foi possível entrar: " + erro.code);
+  }
+};
+
+sair.onclick = () => signOut(auth);
+
+onAuthStateChanged(auth, (user) => {
+  entrar.hidden = !!user;
+  sair.hidden = !user;
+  usuario.textContent = user
+    ? "Olá, " + (user.displayName || "usuário") + "! "
+    : "";
+});
 
 </script>
 </body>
