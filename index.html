@@ -21,4 +21,16 @@ function paint(){let query=$('search').value.trim().toLowerCase();$('searchArea'
 for(let x of list){let card=document.createElement('article');card.className='card';let pic=document.createElement('div');pic.className='imagebox';pic.textContent='🎬';let u=https(x.capa);if(u){let img=document.createElement('img');img.src=u;img.alt='Capa de '+(x.titulo||'');img.loading='lazy';pic.append(img)}if(x.lancamento===true){let tag=document.createElement('span');tag.className='tag';tag.textContent='LANÇAMENTO';pic.append(tag)}let body=document.createElement('div');body.className='card-body';let name=document.createElement('h3');name.textContent=x.titulo||'Sem título';let meta=document.createElement('p');meta.className='meta';meta.textContent=x.categoria||'Conteúdo';let acts=document.createElement('div');acts.className='actions';let watch=document.createElement('button');watch.className='btn';watch.textContent='▶ Ver detalhes';watch.onclick=()=>openItem(x);let fav=document.createElement('button');fav.className='btn alt';fav.textContent=favs.has(x.id)?'♥ Salvo':'♡ Favorito';fav.onclick=()=>{favs.has(x.id)?favs.delete(x.id):favs.add(x.id);localStorage.setItem(favKey,JSON.stringify([...favs]));paint()};acts.append(watch,fav);body.append(name,meta,acts);card.append(pic,body);$('cards').append(card)}}
 for(let b of document.querySelectorAll('nav button'))b.onclick=()=>{tab=b.dataset.tab;document.querySelectorAll('nav button').forEach(v=>v.classList.toggle('on',v===b));paint();if(tab==='pesquisar')$('search').focus();window.scrollTo({top:0,behavior:'smooth'})};$('search').oninput=paint;$('heroExplore').onclick=()=>document.getElementById('listTitle').scrollIntoView({behavior:'smooth'});
 onSnapshot(collection(db,'conteudos'),snap=>{items=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>String(a.titulo||'').localeCompare(String(b.titulo||''),'pt-BR'));let featured=items.find(x=>x.lancamento)||items[0];if(featured){$('heroTitle').textContent=featured.titulo||'Em destaque';$('heroText').textContent=featured.descricao||'Confira este título no catálogo.';let hero=$('hero');hero.querySelector('img')?.remove();if(https(featured.capa)){let im=document.createElement('img');im.src=featured.capa;im.alt='';hero.prepend(im)}$('heroWatch').classList.remove('hidden');$('heroWatch').onclick=()=>openItem(featured)}paint()},e=>{$('status').textContent='Não foi possível carregar o catálogo: '+e.code});
-</script></body></html>
+ </script><a href="https://whatsapp.com/channel/0029Vb9M6pZHLHQcR6jWXo0m"
+   target="_blank"
+   rel="noopener noreferrer"
+   aria-label="Seguir canal CINEFLIX no WhatsApp"
+   style="position:fixed;bottom:90px;right:18px;
+   width:56px;height:56px;background:#25D366;
+   border-radius:50%;display:flex;align-items:center;
+   justify-content:center;z-index:9999;
+   box-shadow:0 4px 12px #0006;">
+  <img src="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/icons/whatsapp.svg"
+       alt="WhatsApp"
+       style="width:30px;height:30px;filter:invert(1);">
+</a></body></html>
