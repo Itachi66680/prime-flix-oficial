@@ -26,6 +26,10 @@ nav button span{white-space:nowrap}nav button.on{background:#34161c}
 .nav-icon{width:22px;height:22px}main{padding-bottom:calc(86px + env(safe-area-inset-bottom,0px))}
 a[aria-label="Seguir canal CINEFLIX no WhatsApp"]{bottom:calc(80px + env(safe-area-inset-bottom,0px))!important}
 }
+/* TOP 1–10 em uma só fileira horizontal, sem quebrar em novas linhas. */
+.catalog-top-scroll{display:flex!important;flex-wrap:nowrap!important;gap:10px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scroll-padding:4px;-webkit-overflow-scrolling:touch;padding:4px 2px 12px;scrollbar-width:thin}
+.catalog-top-scroll>.card{flex:0 0 clamp(125px,30vw,190px);min-width:0;scroll-snap-align:start}
+@media(min-width:900px){.catalog-top-scroll>.card{flex-basis:190px}}
 .cine-mark{position:absolute;top:5px;left:5px;z-index:3;color:#ff1834;font-size:20px;line-height:1;font-weight:1000;text-shadow:0 2px 5px #000b}.cine-top{position:absolute;top:5px;right:5px;z-index:3;background:#d90e27;color:white;font-size:8px;font-weight:900;padding:3px 4px;border-radius:2px;text-align:center;line-height:1.1}.cine-ribbon{position:absolute;bottom:0;left:0;right:0;z-index:2;background:#d80d2a;color:#fff;font-size:10px;padding:5px 2px;font-weight:800;text-align:center}.cine-ribbon.recent{background:#a70d23}.cine-progress{position:absolute;bottom:0;left:0;right:0;height:5px;background:#6b6b70;z-index:4}.cine-progress span{display:block;background:#ed182c;height:100%}.catalog-section>p{color:#bfc0c7;font-size:12px;margin:0 0 11px}.detail-progress-wrap{margin:12px 0 15px}.detail-progress-rail{height:6px;border-radius:7px;background:#444;overflow:hidden}.detail-progress-fill{height:100%;background:#ed182c}.detail-progress-label{font-size:12px;color:#c3c3ca;margin-top:7px}.detail-extras{display:flex;gap:8px;flex-wrap:wrap;margin:15px 0}.detail-extras button{background:#24252c;border:1px solid #42444c;border-radius:10px;color:white;padding:10px 13px;font:inherit;cursor:pointer}.detail-extras button:disabled{opacity:.45;cursor:not-allowed}.detail-feedback{font-size:13px;color:#e7c9ce;min-height:16px}.detail-tagline{font-size:12px;color:#f0b9c3;font-weight:800;letter-spacing:1px;margin-top:8px}.card .imagebox{overflow:hidden}
 </style><link rel="manifest" href="./manifest.webmanifest"><link rel="apple-touch-icon" href="./icone-180.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="CINEFLIX"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><script src="./instalar.js" defer></script><style>
 #catalogApp[hidden]{display:none!important}
@@ -247,10 +251,9 @@ function makeCard(x,number=null){
  if(src){const img=document.createElement('img');img.src=src;img.alt='Capa de '+(x.titulo||'');img.loading='lazy';pic.append(img)}
  const logo=document.createElement('span');logo.className='cine-mark';logo.textContent='C';logo.setAttribute('aria-label','CINEFLIX');pic.append(logo);
  if(number!==null){const rank=document.createElement('span');rank.className='cine-top';rank.textContent='TOP '+number;pic.append(rank)}
- const recent=x.criadoEm?.toMillis?.()>Date.now()-30*86400000;
  const p=progressOf(x);
  if(p){const bar=document.createElement('div');bar.className='cine-progress';const fill=document.createElement('span');fill.style.width=Math.min(100,Math.round(p.seconds/p.duration*100))+'%';bar.append(fill);pic.append(bar)}
- else if(x.novoEpisodio||x.lancamento||recent){const ribbon=document.createElement('span');ribbon.className='cine-ribbon'+(!x.lancamento?' recent':'');ribbon.textContent=x.novoEpisodio?'NOVO EPISÓDIO':x.lancamento?'NOVO LANÇAMENTO':'ADICIONADO RECENTEMENTE';pic.append(ribbon)}
+ else if(x.novoEpisodio||x.lancamento){const ribbon=document.createElement('span');ribbon.className='cine-ribbon';ribbon.textContent=x.novoEpisodio?'NOVO EPISÓDIO':'NOVO LANÇAMENTO';pic.append(ribbon)}
  const body=document.createElement('div');body.className='card-body';
  const name=document.createElement('h3');name.textContent=x.titulo||'Sem título';
  const meta=document.createElement('p');meta.className='meta';meta.textContent=[x.categoria||'Conteúdo',...getGenres(x)].join(' • ');
@@ -276,7 +279,8 @@ function paint(){
   const wrap=document.createElement('section');wrap.className='catalog-section';
   const head=document.createElement('h2');head.textContent=label;wrap.append(head);
   if(description){const note=document.createElement('p');note.textContent=description;wrap.append(note)}
-  const grid=document.createElement('div');grid.className='catalog-grid';
+  const grid=document.createElement('div');grid.className='catalog-grid'+(ranking?' catalog-top-scroll':'');
+  if(ranking){grid.setAttribute('aria-label','Top 10 em sequência: deslize para o lado para ver mais títulos');grid.tabIndex=0}
   entries.forEach((x,i)=>grid.append(makeCard(x,ranking?i+1:null)));wrap.append(grid);$('cards').append(wrap);
  }
  if(tab==='inicio'&&!selectedGenre){
