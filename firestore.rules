@@ -20,15 +20,61 @@ service cloud.firestore {
       // Só o dono e administradores autorizados podem ler e enviar.
       allow read: if editor();
       allow create: if editor()
-        && request.resource.data.keys().hasOnly(['uid', 'nome', 'texto', 'criadoEm'])
+        && request.resource.data.keys().hasOnly(['uid', 'nome', 'texto', 'criadoEm', 'anexo'])
         && request.resource.data.keys().hasAll(['uid', 'nome', 'texto', 'criadoEm'])
         && request.resource.data.uid == request.auth.uid
         && request.resource.data.nome is string
         && request.resource.data.nome.size() > 0
         && request.resource.data.nome.size() <= 80
         && request.resource.data.texto is string
-        && request.resource.data.texto.size() > 0
         && request.resource.data.texto.size() <= 2000
+        && (request.resource.data.texto.size() > 0 || request.resource.data.keys().hasAny(['anexo']))
+        && (
+          !request.resource.data.keys().hasAny(['anexo'])
+          || (
+            request.resource.data.anexo is map
+            && request.resource.data.anexo.keys().hasOnly(['caminho','nome','tipo','tamanho'])
+            && request.resource.data.anexo.keys().hasAll(['caminho','nome','tipo','tamanho'])
+            && request.resource.data.anexo.caminho is string
+            && request.resource.data.anexo.caminho.matches('^chatEquipe/' + request.auth.uid + '/[A-Za-z0-9-]+\\.(jpg|png|webp|gif|pdf|txt)
+        && request.resource.data.criadoEm == request.time;
+      // Mensagens não podem ser alteradas, apagadas ou forjadas por outro usuário.
+      allow update, delete: if false;
+    }
+    match /conteudos/{id} {
+      allow read: if true;
+      allow create, update, delete: if editor();
+    }
+    match /administradores/{email} {
+      // O administrador pode ler apenas o próprio registro; o dono gerencia todos.
+      allow get: if owner() || (
+        signedIn() && request.auth.token.email_verified == true
+        && request.auth.token.email is string
+        && email == request.auth.token.email.lower()
+      );
+      allow list: if owner();
+      allow create, update: if owner()
+        && email.matches('^[^/ @]+@[^/ @]+\\.[^/ @]+$')
+        && request.resource.data.keys().hasOnly(['nome','email','adicionadoEm','adicionadoPor'])
+        && request.resource.data.nome is string
+        && request.resource.data.nome.size() > 0
+        && request.resource.data.nome.size() <= 80
+        && request.resource.data.email == email
+        && request.resource.data.adicionadoPor == 'CJzmV3mKGTf3TWpwbmOSKJW3cPv1';
+      allow delete: if owner();
+    }
+  }
+}
+)
+            && request.resource.data.anexo.nome is string
+            && request.resource.data.anexo.nome.size() > 0
+            && request.resource.data.anexo.nome.size() <= 100
+            && request.resource.data.anexo.tipo in ['image/jpeg','image/png','image/webp','image/gif','application/pdf','text/plain']
+            && request.resource.data.anexo.tamanho is int
+            && request.resource.data.anexo.tamanho > 0
+            && request.resource.data.anexo.tamanho <= 5242880
+          )
+        )
         && request.resource.data.criadoEm == request.time;
       // Mensagens não podem ser alteradas, apagadas ou forjadas por outro usuário.
       allow update, delete: if false;
