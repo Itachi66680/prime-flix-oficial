@@ -172,7 +172,27 @@ const groups=[['filme','Filmes'],['serie','Séries'],['anime','Animes'],['','Out
 for(const [category,label] of groups){const group=list.filter(x=>contentCategory(x)===category);if(!group.length)continue;const section=document.createElement('section');section.className='catalog-section';const heading=document.createElement('h2');heading.textContent=label;const grid=document.createElement('div');grid.className='catalog-grid';section.append(heading,grid);$('cards').append(section);
 for(let x of group){let card=document.createElement('article');card.className='card';let pic=document.createElement('div');pic.className='imagebox';pic.tabIndex=0;pic.setAttribute('role','button');pic.setAttribute('aria-label','Ver detalhes de '+(x.titulo||'título'));pic.onclick=()=>openItem(x);pic.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openItem(x)}};pic.textContent='🎬';let u=https(x.capa);if(u){let img=document.createElement('img');img.src=u;img.alt='Capa de '+(x.titulo||'');img.loading='lazy';pic.append(img)}if(x.lancamento===true){let tag=document.createElement('span');tag.className='tag';tag.textContent='LANÇAMENTO';pic.append(tag)}let body=document.createElement('div');body.className='card-body';let name=document.createElement('h3');name.textContent=x.titulo||'Sem título';let meta=document.createElement('p');meta.className='meta';meta.textContent=[x.categoria||'Conteúdo',...getGenres(x)].join(' • ');let acts=document.createElement('div');acts.className='actions';let watch=document.createElement('button');watch.className='btn';watch.textContent='▶ Assistir';watch.onclick=()=>openItem(x);let fav=document.createElement('button');fav.className='btn alt';fav.textContent=favs.has(x.id)?'♥ Salvo':'♡ Favorito';fav.setAttribute('aria-label','Favoritar '+(x.titulo||'título'));fav.setAttribute('aria-pressed',String(favs.has(x.id)));fav.onclick=()=>{favs.has(x.id)?favs.delete(x.id):favs.add(x.id);localStorage.setItem(favKey,JSON.stringify([...favs]));paint()};acts.append(watch);body.append(name);const age=ageBadge(x);if(age)body.append(age);body.append(meta,acts);card.append(pic,body);grid.append(card)}}}
 for(let b of document.querySelectorAll('nav button'))b.onclick=()=>{tab=b.dataset.tab;document.querySelectorAll('nav button').forEach(v=>v.classList.toggle('on',v===b));paint();if(tab==='pesquisar')$('search').focus();window.scrollTo({top:0,behavior:'smooth'})};$('search').oninput=paint;$('heroExplore').onclick=()=>document.getElementById('listTitle').scrollIntoView({behavior:'smooth'});
-let featuredIndex=0,heroTimer=null,rotationPaused=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+let featuredIndex=0,heroTimer=null,initialFeaturedPicked=false,rotationPaused=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+// Escolhe uma categoria diferente da última visita, quando houver alternativas.
+function randomFeaturedIndex(){
+ const groups=new Map();
+ items.forEach((item,index)=>{
+  const kind=String(item.categoria||'Filme').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
+  const category=kind==='serie'?'Série':kind==='anime'?'Anime':'Filme';
+  if(!groups.has(category))groups.set(category,[]);
+  groups.get(category).push(index);
+ });
+ const available=[...groups.keys()];
+ if(!available.length)return 0;
+ let previous=null;
+ try{previous=localStorage.getItem('cineflix-last-feature-category')}catch(e){}
+ const eligible=available.filter(category=>category!==previous);
+ const choices=eligible.length?eligible:available;
+ const category=choices[Math.floor(Math.random()*choices.length)];
+ const indexes=groups.get(category);
+ try{localStorage.setItem('cineflix-last-feature-category',category)}catch(e){}
+ return indexes[Math.floor(Math.random()*indexes.length)];
+}
 const dots=document.createElement('div');dots.className='hero-dots';dots.setAttribute('role','group');dots.setAttribute('aria-label','Títulos em destaque');
 const rotation=document.createElement('button');rotation.className='hero-rotation';rotation.type='button';rotation.textContent=rotationPaused?'▶':'Ⅱ';rotation.setAttribute('aria-label',rotationPaused?'Retomar destaques':'Pausar destaques');rotation.title=rotationPaused?'Retomar destaques':'Pausar destaques';rotation.setAttribute('aria-pressed',String(rotationPaused));
 $('hero').querySelector('.hero-body').append(dots,rotation);
@@ -193,8 +213,11 @@ onSnapshot(collection(db,'conteudos'),snap=>{
  const previousId=items[featuredIndex]?.id;
  items=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>String(a.titulo||'').localeCompare(String(b.titulo||''),'pt-BR'));
  refreshGenreOptions();
- const previousIndex=items.findIndex(x=>x.id===previousId),firstLaunch=items.findIndex(x=>x.lancamento);
- if(items.length)showFeatured(previousIndex>=0?previousIndex:firstLaunch>=0?firstLaunch:0);
+ const previousIndex=items.findIndex(x=>x.id===previousId);
+ if(items.length){
+  if(!initialFeaturedPicked){initialFeaturedPicked=true;showFeatured(randomFeaturedIndex())}
+  else showFeatured(previousIndex>=0?previousIndex:0);
+ }
  else{$('hero').querySelector('img')?.remove();$('heroTitle').textContent='Bem-vindo ao CINEFLIX';$('heroText').textContent='Explore o catálogo e escolha o que assistir.';$('heroExplore').textContent='Explorar catálogo';$('heroExplore').onclick=()=>$('listTitle').scrollIntoView({behavior:'smooth'});$('heroWatch').classList.add('hidden');dots.replaceChildren();rotation.hidden=true;}
  paint();syncRotation();
 },e=>{$('status').textContent='Não foi possível carregar o catálogo: '+e.code});
