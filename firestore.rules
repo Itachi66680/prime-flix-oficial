@@ -83,6 +83,22 @@ service cloud.firestore {
         && request.resource.data.vistoEm == request.time;
       allow delete: if false;
     }
+    match /denuncias/{id} {
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly(['tituloId','titulo','motivo','uid','criadoEm'])
+        && request.resource.data.keys().hasAll(['tituloId','titulo','motivo','uid','criadoEm'])
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.tituloId is string
+        && request.resource.data.tituloId.size() > 0
+        && request.resource.data.tituloId.size() <= 128
+        && request.resource.data.titulo is string
+        && request.resource.data.titulo.size() <= 120
+        && request.resource.data.motivo is string
+        && request.resource.data.motivo.size() >= 5
+        && request.resource.data.motivo.size() <= 500
+        && request.resource.data.criadoEm == request.time;
+      allow read, update, delete: if owner();
+    }
     match /conteudos/{id} {
       allow read: if true;
       allow create, update, delete: if editor();
