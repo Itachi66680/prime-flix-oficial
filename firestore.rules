@@ -71,6 +71,18 @@ service cloud.firestore {
         && request.resource.data.criadoEm == request.time;
       allow update, delete: if false;
     }
+    match /presenca/{uid} {
+      // Cada pessoa logada atualiza apenas seu próprio sinal de atividade.
+      // Somente o dono pode ver a lista e contar visitantes.
+      allow read: if owner();
+      allow create, update: if signedIn()
+        && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['uid','vistoEm'])
+        && request.resource.data.keys().hasAll(['uid','vistoEm'])
+        && request.resource.data.uid == uid
+        && request.resource.data.vistoEm == request.time;
+      allow delete: if false;
+    }
     match /conteudos/{id} {
       allow read: if true;
       allow create, update, delete: if editor();
