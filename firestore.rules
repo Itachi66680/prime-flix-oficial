@@ -33,21 +33,42 @@ service cloud.firestore {
           !request.resource.data.keys().hasAny(['anexo'])
           || (
             request.resource.data.anexo is map
-            && request.resource.data.anexo.keys().hasOnly(['caminho','nome','tipo','tamanho'])
-            && request.resource.data.anexo.keys().hasAll(['caminho','nome','tipo','tamanho'])
-            && request.resource.data.anexo.caminho is string
-            && request.resource.data.anexo.caminho.matches('chatEquipe/' + request.auth.uid + '/[A-Za-z0-9-]+[.](jpg|png|webp|gif|pdf|txt)')
+            && request.resource.data.anexo.keys().hasOnly(['id','nome','tipo','tamanho'])
+            && request.resource.data.anexo.keys().hasAll(['id','nome','tipo','tamanho'])
+            && request.resource.data.anexo.id is string
+            && request.resource.data.anexo.id.matches('[A-Za-z0-9]{15,32}')
             && request.resource.data.anexo.nome is string
             && request.resource.data.anexo.nome.size() > 0
             && request.resource.data.anexo.nome.size() <= 100
             && request.resource.data.anexo.tipo in ['image/jpeg','image/png','image/webp','image/gif','application/pdf','text/plain']
             && request.resource.data.anexo.tamanho is int
             && request.resource.data.anexo.tamanho > 0
-            && request.resource.data.anexo.tamanho <= 5242880
+            && request.resource.data.anexo.tamanho <= 409600
           )
         )
         && request.resource.data.criadoEm == request.time;
       // Mensagens não podem ser alteradas, apagadas ou forjadas por outro usuário.
+      allow update, delete: if false;
+    }
+    match /chatAnexos/{anexoId} {
+      // Anexos armazenados dentro da cota gratuita do Firestore.
+      allow get: if editor();
+      allow list: if false;
+      allow create: if editor()
+        && request.resource.data.keys().hasOnly(['uid','nome','tipo','tamanho','base64','criadoEm'])
+        && request.resource.data.keys().hasAll(['uid','nome','tipo','tamanho','base64','criadoEm'])
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.nome is string
+        && request.resource.data.nome.size() > 0
+        && request.resource.data.nome.size() <= 100
+        && request.resource.data.tipo in ['image/jpeg','image/png','image/webp','image/gif','application/pdf','text/plain']
+        && request.resource.data.tamanho is int
+        && request.resource.data.tamanho > 0
+        && request.resource.data.tamanho <= 409600
+        && request.resource.data.base64 is string
+        && request.resource.data.base64.size() > 0
+        && request.resource.data.base64.size() <= 550000
+        && request.resource.data.criadoEm == request.time;
       allow update, delete: if false;
     }
     match /conteudos/{id} {
