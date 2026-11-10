@@ -16,6 +16,23 @@ service cloud.firestore {
     function editor() {
       return owner() || member();
     }
+    match /chatEquipe/{mensagemId} {
+      // Só o dono e administradores autorizados podem ler e enviar.
+      allow read: if editor();
+      allow create: if editor()
+        && request.resource.data.keys().hasOnly(['uid', 'nome', 'texto', 'criadoEm'])
+        && request.resource.data.keys().hasAll(['uid', 'nome', 'texto', 'criadoEm'])
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.nome is string
+        && request.resource.data.nome.size() > 0
+        && request.resource.data.nome.size() <= 80
+        && request.resource.data.texto is string
+        && request.resource.data.texto.size() > 0
+        && request.resource.data.texto.size() <= 2000
+        && request.resource.data.criadoEm == request.time;
+      // Mensagens não podem ser alteradas, apagadas ou forjadas por outro usuário.
+      allow update, delete: if false;
+    }
     match /conteudos/{id} {
       allow read: if true;
       allow create, update, delete: if editor();
