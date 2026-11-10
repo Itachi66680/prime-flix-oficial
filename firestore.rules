@@ -1,0 +1,42 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+    function owner() {
+      return signedIn() && request.auth.uid == 'CJzmV3mKGTf3TWpwbmOSKJW3cPv1';
+    }
+    function member() {
+      return signedIn()
+        && request.auth.token.email_verified == true
+        && request.auth.token.email is string
+        && exists(/databases/$(database)/documents/administradores/$(request.auth.token.email.lower()));
+    }
+    function editor() {
+      return owner() || member();
+    }
+    match /conteudos/{id} {
+      allow read: if signedIn();
+      allow create, update, delete: if editor();
+    }
+    match /administradores/{email} {
+      // O administrador pode ler apenas o próprio registro; o dono gerencia todos.
+      allow get: if owner() || (
+        signedIn() && request.auth.token.email_verified == true
+        && request.auth.token.email is string
+        && email == request.auth.token.email.lower()
+      );
+      allow list: if owner();
+      allow create, update: if owner()
+        && email.matches('^[^/ @]+@[^/ @]+\\.[^/ @]+$')
+        && request.resource.data.keys().hasOnly(['nome','email','adicionadoEm','adicionadoPor'])
+        && request.resource.data.nome is string
+        && request.resource.data.nome.size() > 0
+        && request.resource.data.nome.size() <= 80
+        && request.resource.data.email == email
+        && request.resource.data.adicionadoPor == 'CJzmV3mKGTf3TWpwbmOSKJW3cPv1';
+      allow delete: if owner();
+    }
+  }
+}
