@@ -36,7 +36,16 @@ service cloud.firestore {
             && request.resource.data.anexo.keys().hasOnly(['caminho','nome','tipo','tamanho'])
             && request.resource.data.anexo.keys().hasAll(['caminho','nome','tipo','tamanho'])
             && request.resource.data.anexo.caminho is string
-            && request.resource.data.anexo.caminho.matches('^chatEquipe/' + request.auth.uid + '/[A-Za-z0-9-]+\\.(jpg|png|webp|gif|pdf|txt)
+            && request.resource.data.anexo.caminho.matches('chatEquipe/' + request.auth.uid + '/[A-Za-z0-9-]+[.](jpg|png|webp|gif|pdf|txt)')
+            && request.resource.data.anexo.nome is string
+            && request.resource.data.anexo.nome.size() > 0
+            && request.resource.data.anexo.nome.size() <= 100
+            && request.resource.data.anexo.tipo in ['image/jpeg','image/png','image/webp','image/gif','application/pdf','text/plain']
+            && request.resource.data.anexo.tamanho is int
+            && request.resource.data.anexo.tamanho > 0
+            && request.resource.data.anexo.tamanho <= 5242880
+          )
+        )
         && request.resource.data.criadoEm == request.time;
       // Mensagens não podem ser alteradas, apagadas ou forjadas por outro usuário.
       allow update, delete: if false;
