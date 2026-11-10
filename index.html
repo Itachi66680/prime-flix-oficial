@@ -331,6 +331,7 @@ function syncRotation(){clearInterval(heroTimer);heroTimer=null;if(window.Cinefl
 rotation.onclick=()=>{rotationPaused=!rotationPaused;rotation.textContent=rotationPaused?'▶':'Ⅱ';rotation.setAttribute('aria-label',rotationPaused?'Retomar destaques':'Pausar destaques');rotation.title=rotationPaused?'Retomar destaques':'Pausar destaques';rotation.setAttribute('aria-pressed',String(rotationPaused));syncRotation()};
 document.addEventListener('visibilitychange',syncRotation);document.addEventListener('cineflix:ready',syncRotation);document.addEventListener('cineflix:waiting',syncRotation);
 for(const button of document.querySelectorAll('nav button'))button.addEventListener('click',syncRotation);
+let deepLinkHandled=false;
 onSnapshot(collection(db,'conteudos'),snap=>{
  const previousId=items[featuredIndex]?.id;
  items=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>String(a.titulo||'').localeCompare(String(b.titulo||''),'pt-BR'));
@@ -342,6 +343,14 @@ onSnapshot(collection(db,'conteudos'),snap=>{
  }
  else{$('hero').querySelector('img')?.remove();$('heroTitle').textContent='Bem-vindo ao CINEFLIX';$('heroText').textContent='Explore o catálogo e escolha o que assistir.';$('heroExplore').textContent='Explorar catálogo';$('heroExplore').onclick=()=>$('listTitle').scrollIntoView({behavior:'smooth'});$('heroWatch').classList.add('hidden');dots.replaceChildren();rotation.hidden=true;}
  paint();syncRotation();
+ if(!deepLinkHandled){
+  deepLinkHandled=true;
+  const match=location.hash.match(/^#titulo=([^&]+)/);
+  if(match){let id='';try{id=decodeURIComponent(match[1])}catch(e){}
+   const linked=items.find(x=>x.id===id);
+   if(linked)openItem(linked);
+  }
+ }
 },e=>{$('status').textContent='Não foi possível carregar o catálogo: '+e.code});
  </script><a href="https://whatsapp.com/channel/0029Vb9M6pZHLHQcR6jWXo0m"
    target="_blank"
