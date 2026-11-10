@@ -12,7 +12,7 @@ body.title-open{overflow:hidden}.detail-page{position:fixed;inset:0;z-index:1000
 .hero{min-height:560px;height:min(76svh,760px);background:#141414;border:0;border-radius:20px;align-items:flex-end;isolation:isolate}.hero img{opacity:1;object-position:center 24%;z-index:-2}.hero:after{z-index:-1;background:linear-gradient(0deg,#050505 0%,#050505cc 15%,#05050540 39%,transparent 67%);pointer-events:none}.hero-body{position:static;max-width:none;width:100%;padding:220px 28px 70px}.hero .eyebrow{display:inline-block;color:#fff;background:var(--red);border-radius:5px;padding:5px 9px;letter-spacing:.5px;font-size:11px}.hero h1{font-size:clamp(28px,4vw,46px);line-height:1.1;max-width:700px;margin:12px 0 16px;text-shadow:0 2px 15px #0008}.hero p{display:none}.hero .actions{margin:0;gap:10px}.hero .actions .btn{border-radius:7px;font-size:15px;min-height:44px;padding:10px 18px}.hero #heroWatch{background:white;color:#080808}.hero #heroExplore{background:#ffffff24;border:1px solid #ffffff70;backdrop-filter:blur(6px)}.hero-dots{position:absolute;bottom:23px;left:50%;transform:translateX(-50%);gap:8px;margin:0;max-width:65%;flex-wrap:nowrap;overflow-x:auto}.hero-dot{width:9px;height:9px;min-width:9px;background:#ffffff70}.hero-dot[aria-current="true"]{background:var(--red);width:18px;border-radius:8px}.hero-rotation{position:absolute;bottom:12px;right:16px;width:36px;height:36px;padding:0;border:1px solid #ffffff90;border-radius:50%;background:#16161670;font-size:17px;display:grid;place-items:center;margin:0}.hero-rotation[hidden]{display:none}.hero-changing .hero-body{animation:none}.hero-changing>img{animation:hero-reveal .45s ease-out}@media(max-width:740px){.hero{height:70svh;min-height:470px;max-height:680px;margin-bottom:26px;border-radius:17px}.hero-body{padding:190px 20px 66px}.hero h1{font-size:30px;max-width:100%;margin-top:10px}.hero .actions .btn{font-size:14px;padding:10px 16px}.hero .eyebrow{font-size:10px}.hero-dots{bottom:24px}.hero-rotation{right:14px}.hero:after{background:linear-gradient(0deg,#050505 0%,#050505c4 18%,#05050525 45%,transparent 70%)}}@media(prefers-reduced-motion:reduce){.hero-changing>img{animation:none}}
 .genre-filter{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:20px 0}.genre-filter label{font-weight:750}.genre-filter select{max-width:100%;background:#1a1b26;color:#fff;border:1px solid #4b4d58;border-radius:20px;padding:10px 35px 10px 15px}.genre-filter select:focus-visible{outline:2px solid #ff727a}.genre-tags{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0}.genre-tags span{border:1px solid #ffffff40;background:#ffffff12;border-radius:20px;padding:5px 10px;font-size:12px}.age-badge{display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:28px;padding:0 5px;border-radius:4px;font-size:14px;line-height:1;font-weight:850;color:#fff;vertical-align:middle;margin:0 7px 0 0;border:1px solid #ffffff45}.age-L{background:#168443}.age-10{background:#147bbb}.age-12{background:#e8c62a;color:#151515}.age-14{background:#da781b}.age-16{background:#bb192b}.age-18{background:#121212}.card .age-badge{margin:0 0 9px}.detail-meta .age-badge{min-width:32px;height:32px}
 /* Catálogo compacto, com três títulos por linha no celular. */
-#cards{display:block}.catalog-section{margin:0 0 28px}.catalog-section>h2{margin:8px 0 14px}.catalog-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+#cards{display:block}.catalog-section{margin:0 0 28px}.continue-empty{background:#1b1c27;border:1px solid #343645;border-radius:12px;padding:18px 14px;color:#b9bac6;font-size:13px;line-height:1.55;margin:8px 0 0}.catalog-section>h2{margin:8px 0 14px}.catalog-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 .card-body{padding:8px}.card h3{font-size:12px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.7em;margin-bottom:6px}.card .meta{display:none}.card .actions{gap:6px;margin-top:7px;flex-direction:column}.card .btn{padding:8px 3px;font-size:10px;min-height:34px;width:100%;border-radius:7px}.card .age-badge{font-size:11px;padding:3px 5px;min-width:23px;min-height:23px}.card .tag{font-size:7px;letter-spacing:0;left:4px;top:5px;padding:4px}.card{border-radius:10px}
 @media(min-width:1000px){.catalog-grid{grid-template-columns:repeat(5,minmax(0,1fr));gap:15px}.card h3{font-size:14px}.card .btn{font-size:12px}}
 @media(max-width:380px){main{padding-left:9px;padding-right:9px}.catalog-grid{gap:6px}.card-body{padding:6px}.card h3{font-size:11px}}
@@ -244,7 +244,7 @@ $('detailReport').onclick=async()=>{
 };
 let detailTrigger=null,detailScroll=0;
 function updateDetailFav(){if(!chosen)return;$('detailFav').textContent=favs.has(chosen.id)?'✓ Na minha lista':'＋ Minha lista';$('detailFav').setAttribute('aria-pressed',String(favs.has(chosen.id)))}
-function closeDetails(){if($('detailPage').classList.contains('hidden'))return;saveWatchProgress();suppressPauseOverlay=true;hidePauseScreen();$('player').pause();$('detailPage').classList.add('hidden');document.body.classList.remove('title-open');document.querySelector('#catalogApp .layout').inert=false;document.querySelector('#catalogApp .top').inert=false;suppressPauseOverlay=false;window.scrollTo(0,detailScroll);detailTrigger?.focus({preventScroll:true});syncRotation()}
+function closeDetails(){if($('detailPage').classList.contains('hidden'))return;saveWatchProgress();suppressPauseOverlay=true;hidePauseScreen();$('player').pause();$('detailPage').classList.add('hidden');document.body.classList.remove('title-open');document.querySelector('#catalogApp .layout').inert=false;document.querySelector('#catalogApp .top').inert=false;suppressPauseOverlay=false;paint();window.scrollTo(0,detailScroll);detailTrigger?.focus({preventScroll:true});syncRotation()}
 $('detailBack').onclick=()=>{if(history.state?.cineflixDetail)history.back();else closeDetails()};
 window.addEventListener('popstate',closeDetails);
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('detailPage').classList.contains('hidden'))$('detailBack').click()});
@@ -308,19 +308,22 @@ function paint(){
    &&(!queryText||tab!=='pesquisar'||(String(x.titulo||'')+' '+(x.descricao||'')+' '+cat+' '+getGenres(x).join(' ')).toLowerCase().includes(queryText));
  });
  $('cards').replaceChildren();$('status').textContent=list.length?list.length+' título(s) encontrado(s).':items.length?'Nenhum título nesta seção.':'Nenhum conteúdo cadastrado ainda.';
- function section(label,entries,description='',ranking=false){
-  if(!entries.length)return;
+ function section(label,entries,description='',ranking=false,alwaysShow=false){
+  if(!entries.length&&!alwaysShow)return;
   const wrap=document.createElement('section');wrap.className='catalog-section';
   const head=document.createElement('h2');head.textContent=label;wrap.append(head);
   if(description){const note=document.createElement('p');note.textContent=description;wrap.append(note)}
   const grid=document.createElement('div');grid.className='catalog-grid'+(ranking?' catalog-top-scroll':'');
   if(ranking){grid.setAttribute('aria-label','Top 10 em sequência: deslize para o lado para ver mais títulos');grid.tabIndex=0}
-  entries.forEach((x,i)=>grid.append(makeCard(x,ranking?i+1:null)));wrap.append(grid);$('cards').append(wrap);
+  entries.forEach((x,i)=>grid.append(makeCard(x,ranking?i+1:null)));
+  if(entries.length)wrap.append(grid);
+  else if(alwaysShow){const empty=document.createElement('p');empty.className='continue-empty';empty.textContent='Comece a assistir a um filme, série ou anime. Seus vídeos pausados aparecerão aqui para continuar de onde parou.';wrap.append(empty)}
+  $('cards').append(wrap);
  }
  if(tab==='inicio'&&!selectedGenre){
   section('10 destaques para assistir',list.slice().sort((a,b)=>(b.criadoEm?.toMillis?.()||0)-(a.criadoEm?.toMillis?.()||0)).slice(0,10),'Destaques do catálogo, não um ranking de audiência.',true);
   const continuing=list.filter(x=>progressOf(x)).sort((a,b)=>watchProgress[b.id].updated-watchProgress[a.id].updated);
-  section('▶ Continue assistindo',continuing,'Retome de onde parou neste navegador.');
+  section('▶ Continue assistindo',continuing,'Retome de onde parou neste navegador.',false,true);
   section('Novidades no CINEFLIX',list.filter(x=>x.lancamento||x.novoEpisodio||x.criadoEm?.toMillis?.()>Date.now()-30*86400000).slice(0,15));
   section('Séries para maratonar',list.filter(x=>contentCategory(x)==='serie'));
   section('Filmes',list.filter(x=>contentCategory(x)==='filme'));
