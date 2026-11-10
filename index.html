@@ -105,13 +105,24 @@ window.CineflixIntro=(()=>{
 <section id="detailPage" class="detail-page hidden" aria-label="Detalhes do título" tabindex="-1"><header class="detail-header"><button id="detailBack" class="detail-back" aria-label="Voltar ao catálogo">←</button><span class="detail-brand">CINEFLIX</span><span aria-hidden="true" style="width:44px"></span></header><div class="detail-hero"><img id="detailArt" class="detail-art" alt=""><div class="detail-copy"><div class="detail-label">CINEFLIX • EM DESTAQUE</div><h1 id="detailTitle"></h1><p id="detailMeta" class="detail-meta"></p><div class="detail-actions"><button id="detailPlay" class="btn detail-play">▶ Assistir</button><button id="detailFav" class="btn alt">＋ Minha lista</button></div><p id="detailDesc" class="detail-description"></p></div></div><div id="detailContent" class="detail-content"><div id="detailPlayerSlot"></div><div id="detailRecommendationsWrap"><h2>Você também pode gostar</h2><div id="detailRecommendations" class="detail-recommendations"></div></div></div></section><script type="module">
 import {initializeApp} from 'https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js';
 import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged} from 'https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js';
-import {getFirestore,collection,onSnapshot} from 'https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js';
+import {getFirestore,collection,doc,setDoc,serverTimestamp,onSnapshot} from 'https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js';
 import {firebaseConfig} from './firebase-config.js';
 const $=id=>document.getElementById(id),app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);let items=[],tab='inicio',chosen=null,season=1;const favKey='cineflix-favoritos',favs=new Set(JSON.parse(localStorage.getItem(favKey)||'[]'));
+// Presença aproximada: uma entrada por conta Google, renovada enquanto a página estiver visível.
+let presenceTimer=null;
+function stopPresence(){if(presenceTimer){clearInterval(presenceTimer);presenceTimer=null}}
+async function sendPresence(){
+ const user=auth.currentUser;
+ if(!user||document.hidden)return;
+ try{await setDoc(doc(db,'presenca',user.uid),{uid:user.uid,vistoEm:serverTimestamp()})}
+ catch(e){console.warn('Presença indisponível:',e.code||e.message)}
+}
+function startPresence(u){stopPresence();if(!u)return;sendPresence();presenceTimer=setInterval(sendPresence,60000)}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&auth.currentUser)sendPresence()});
 const https=x=>{try{let u=new URL(x);return u.protocol==='https:'?u.href:null}catch{return null}};
 $('loginBtn').onclick=async()=>{window.CineflixIntro.unlock();try{await signInWithPopup(auth,new GoogleAuthProvider())}catch(e){if(e.code!=='auth/popup-closed-by-user')alert('Não foi possível entrar: '+e.code)}};
 $('logoutBtn').onclick=()=>{closeDetails();signOut(auth)};
-onAuthStateChanged(auth,u=>{$('loginBtn').classList.toggle('hidden',!!u);$('logoutBtn').classList.toggle('hidden',!u);$('who').textContent=u?'Olá, '+(u.displayName||'visitante'):'';window.CineflixIntro.setUser(u)},()=>window.CineflixIntro.authError());
+onAuthStateChanged(auth,u=>{startPresence(u);$('loginBtn').classList.toggle('hidden',!!u);$('logoutBtn').classList.toggle('hidden',!u);$('who').textContent=u?'Olá, '+(u.displayName||'visitante'):'';window.CineflixIntro.setUser(u)},()=>window.CineflixIntro.authError());
 $('welcomeGoogle').onclick = () => $('loginBtn').click();
 
 
