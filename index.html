@@ -250,7 +250,7 @@ function makeCard(x,number=null){
  const recent=x.criadoEm?.toMillis?.()>Date.now()-30*86400000;
  const p=progressOf(x);
  if(p){const bar=document.createElement('div');bar.className='cine-progress';const fill=document.createElement('span');fill.style.width=Math.min(100,Math.round(p.seconds/p.duration*100))+'%';bar.append(fill);pic.append(bar)}
- else if(x.lancamento||recent){const ribbon=document.createElement('span');ribbon.className='cine-ribbon'+(!x.lancamento?' recent':'');ribbon.textContent=x.lancamento?'NOVO LANÇAMENTO':'ADICIONADO RECENTEMENTE';pic.append(ribbon)}
+ else if(x.novoEpisodio||x.lancamento||recent){const ribbon=document.createElement('span');ribbon.className='cine-ribbon'+(!x.lancamento?' recent':'');ribbon.textContent=x.novoEpisodio?'NOVO EPISÓDIO':x.lancamento?'NOVO LANÇAMENTO':'ADICIONADO RECENTEMENTE';pic.append(ribbon)}
  const body=document.createElement('div');body.className='card-body';
  const name=document.createElement('h3');name.textContent=x.titulo||'Sem título';
  const meta=document.createElement('p');meta.className='meta';meta.textContent=[x.categoria||'Conteúdo',...getGenres(x)].join(' • ');
@@ -282,7 +282,7 @@ function paint(){
  if(tab==='inicio'&&!selectedGenre){
   const continuing=list.filter(x=>progressOf(x)).sort((a,b)=>watchProgress[b.id].updated-watchProgress[a.id].updated);
   section('▶ Continue assistindo',continuing,'Retome de onde parou neste navegador.');
-  section('Novidades no CINEFLIX',list.filter(x=>x.lancamento||x.criadoEm?.toMillis?.()>Date.now()-30*86400000).slice(0,15));
+  section('Novidades no CINEFLIX',list.filter(x=>x.lancamento||x.novoEpisodio||x.criadoEm?.toMillis?.()>Date.now()-30*86400000).slice(0,15));
   section('10 destaques para assistir',list.slice().sort((a,b)=>(b.criadoEm?.toMillis?.()||0)-(a.criadoEm?.toMillis?.()||0)).slice(0,10),'Destaques do catálogo, não um ranking de audiência.',true);
   section('Séries para maratonar',list.filter(x=>contentCategory(x)==='serie'));
   section('Filmes',list.filter(x=>contentCategory(x)==='filme'));
