@@ -284,10 +284,10 @@ function paint(){
   entries.forEach((x,i)=>grid.append(makeCard(x,ranking?i+1:null)));wrap.append(grid);$('cards').append(wrap);
  }
  if(tab==='inicio'&&!selectedGenre){
+  section('10 destaques para assistir',list.slice().sort((a,b)=>(b.criadoEm?.toMillis?.()||0)-(a.criadoEm?.toMillis?.()||0)).slice(0,10),'Destaques do catálogo, não um ranking de audiência.',true);
   const continuing=list.filter(x=>progressOf(x)).sort((a,b)=>watchProgress[b.id].updated-watchProgress[a.id].updated);
   section('▶ Continue assistindo',continuing,'Retome de onde parou neste navegador.');
   section('Novidades no CINEFLIX',list.filter(x=>x.lancamento||x.novoEpisodio||x.criadoEm?.toMillis?.()>Date.now()-30*86400000).slice(0,15));
-  section('10 destaques para assistir',list.slice().sort((a,b)=>(b.criadoEm?.toMillis?.()||0)-(a.criadoEm?.toMillis?.()||0)).slice(0,10),'Destaques do catálogo, não um ranking de audiência.',true);
   section('Séries para maratonar',list.filter(x=>contentCategory(x)==='serie'));
   section('Filmes',list.filter(x=>contentCategory(x)==='filme'));
   section('Animes',list.filter(x=>contentCategory(x)==='anime'));
