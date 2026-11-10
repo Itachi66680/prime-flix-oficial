@@ -26,6 +26,7 @@ nav button span{white-space:nowrap}nav button.on{background:#34161c}
 .nav-icon{width:22px;height:22px}main{padding-bottom:calc(86px + env(safe-area-inset-bottom,0px))}
 a[aria-label="Seguir canal CINEFLIX no WhatsApp"]{bottom:calc(80px + env(safe-area-inset-bottom,0px))!important}
 }
+.cine-mark{position:absolute;top:5px;left:5px;z-index:3;color:#ff1834;font-size:20px;line-height:1;font-weight:1000;text-shadow:0 2px 5px #000b}.cine-top{position:absolute;top:5px;right:5px;z-index:3;background:#d90e27;color:white;font-size:8px;font-weight:900;padding:3px 4px;border-radius:2px;text-align:center;line-height:1.1}.cine-ribbon{position:absolute;bottom:0;left:0;right:0;z-index:2;background:#d80d2a;color:#fff;font-size:10px;padding:5px 2px;font-weight:800;text-align:center}.cine-ribbon.recent{background:#a70d23}.cine-progress{position:absolute;bottom:0;left:0;right:0;height:5px;background:#6b6b70;z-index:4}.cine-progress span{display:block;background:#ed182c;height:100%}.catalog-section>p{color:#bfc0c7;font-size:12px;margin:0 0 11px}.detail-progress-wrap{margin:12px 0 15px}.detail-progress-rail{height:6px;border-radius:7px;background:#444;overflow:hidden}.detail-progress-fill{height:100%;background:#ed182c}.detail-progress-label{font-size:12px;color:#c3c3ca;margin-top:7px}.detail-extras{display:flex;gap:8px;flex-wrap:wrap;margin:15px 0}.detail-extras button{background:#24252c;border:1px solid #42444c;border-radius:10px;color:white;padding:10px 13px;font:inherit;cursor:pointer}.detail-extras button:disabled{opacity:.45;cursor:not-allowed}.detail-feedback{font-size:13px;color:#e7c9ce;min-height:16px}.detail-tagline{font-size:12px;color:#f0b9c3;font-weight:800;letter-spacing:1px;margin-top:8px}.card .imagebox{overflow:hidden}
 </style><link rel="manifest" href="./manifest.webmanifest"><link rel="apple-touch-icon" href="./icone-180.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="CINEFLIX"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><script src="./instalar.js" defer></script><style>
 #catalogApp[hidden]{display:none!important}
 #brandIntro .intro-word{animation:none;font-size:clamp(32px,10.5vw,100px);letter-spacing:0;text-shadow:none}
@@ -102,10 +103,10 @@ window.CineflixIntro=(()=>{
  return {setUser,authError,unlock(){},get ready(){return finished&&known&&!!user;}};
 })();
 </script>
-<section id="detailPage" class="detail-page hidden" aria-label="Detalhes do título" tabindex="-1"><header class="detail-header"><button id="detailBack" class="detail-back" aria-label="Voltar ao catálogo">←</button><span class="detail-brand">CINEFLIX</span><span aria-hidden="true" style="width:44px"></span></header><div class="detail-hero"><img id="detailArt" class="detail-art" alt=""><div class="detail-copy"><div class="detail-label">CINEFLIX • EM DESTAQUE</div><h1 id="detailTitle"></h1><p id="detailMeta" class="detail-meta"></p><div class="detail-actions"><button id="detailPlay" class="btn detail-play">▶ Assistir</button><button id="detailFav" class="btn alt">＋ Minha lista</button></div><p id="detailDesc" class="detail-description"></p></div></div><div id="detailContent" class="detail-content"><div id="detailPlayerSlot"></div><div id="detailRecommendationsWrap"><h2>Você também pode gostar</h2><div id="detailRecommendations" class="detail-recommendations"></div></div></div></section><script type="module">
+<section id="detailPage" class="detail-page hidden" aria-label="Detalhes do título" tabindex="-1"><header class="detail-header"><button id="detailBack" class="detail-back" aria-label="Voltar ao catálogo">←</button><span class="detail-brand">CINEFLIX</span><span aria-hidden="true" style="width:44px"></span></header><div class="detail-hero"><img id="detailArt" class="detail-art" alt=""><div class="detail-copy"><div class="detail-label">CINEFLIX • EM DESTAQUE</div><div id="detailTagline" class="detail-tagline"></div><h1 id="detailTitle"></h1><p id="detailMeta" class="detail-meta"></p><div class="detail-actions"><button id="detailPlay" class="btn detail-play">▶ Assistir</button><button id="detailFav" class="btn alt">＋ Minha lista</button></div><div id="detailProgressWrap" class="detail-progress-wrap hidden"><div class="detail-progress-rail"><div class="detail-progress-fill" id="detailProgressFill"></div></div><p id="detailProgressLabel" class="detail-progress-label"></p></div><div class="detail-extras"><button type="button" id="detailDownload">⬇ Baixar</button><button type="button" id="detailRate">☆ Avaliar</button><button type="button" id="detailShare">↗ Compartilhar</button><button type="button" id="detailReport">⚑ Denunciar</button></div><p id="detailFeedback" class="detail-feedback" role="status"></p><p id="detailDesc" class="detail-description"></p></div></div><div id="detailContent" class="detail-content"><div id="detailPlayerSlot"></div><div id="detailRecommendationsWrap"><h2>Você também pode gostar</h2><div id="detailRecommendations" class="detail-recommendations"></div></div></div></section><script type="module">
 import {initializeApp} from 'https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js';
 import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged} from 'https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js';
-import {getFirestore,collection,doc,setDoc,serverTimestamp,onSnapshot} from 'https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js';
+import {getFirestore,collection,doc,addDoc,setDoc,serverTimestamp,onSnapshot} from 'https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js';
 import {firebaseConfig} from './firebase-config.js';
 const $=id=>document.getElementById(id),app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);let items=[],tab='inicio',chosen=null,season=1;const favKey='cineflix-favoritos',favs=new Set(JSON.parse(localStorage.getItem(favKey)||'[]'));
 // Presença aproximada: uma entrada por conta Google, renovada enquanto a página estiver visível.
@@ -135,30 +136,100 @@ $('genreFilter').onchange=()=>{selectedGenre=$('genreFilter').value;paint()};ref
  function normCat(x){return String(x||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')}
 function contentCategory(x){const c=normCat(x.categoria).trim();if(c==='anime'||c==='animes')return 'anime';if(c==='filme'||c==='filmes')return 'filme';if(c==='serie'||c==='series')return 'serie';return ''}
 function episodes(x){return Array.isArray(x.episodios)?x.episodios.filter(e=>e&&Number(e.temporada)>=1&&Number(e.numero)>=1).sort((a,b)=>Number(a.temporada)-Number(b.temporada)||Number(a.numero)-Number(b.numero)):[]}
-function showVideo(url,title){const safe=https(url);if(!safe)return alert('Este vídeo ainda não tem um link HTTPS autorizado.');$('player').pause();$('player').classList.remove('hidden');$('player').src=safe;$('viewerTitle').textContent=title;$('viewer').classList.remove('hidden');$('viewer').scrollIntoView({behavior:'smooth',block:'start'})}
+const progressKey='cineflix-watch-progress-v1',ratingKey='cineflix-ratings-v1';
+function loadObject(k){try{return JSON.parse(localStorage.getItem(k)||'{}')||{}}catch{return {}}}
+const watchProgress=loadObject(progressKey),userRatings=loadObject(ratingKey);
+let currentVideo='',lastRecorded=0;
+function progressOf(x){const p=watchProgress[x?.id];return p&&Number(p.duration)>0&&p.seconds>5&&p.seconds<p.duration-4?p:null}
+function saveWatchProgress(){
+ const v=$('player');if(!chosen||!currentVideo||!Number.isFinite(v.currentTime)||v.currentTime<=2)return;
+ const duration=Number.isFinite(v.duration)?v.duration:0;
+ if(duration>0&&v.currentTime>=duration-4)delete watchProgress[chosen.id];
+ else watchProgress[chosen.id]={url:currentVideo,seconds:v.currentTime,duration,title:$('viewerTitle').textContent,updated:Date.now()};
+ try{localStorage.setItem(progressKey,JSON.stringify(watchProgress))}catch(e){}
+ updateDetailProgress();
+}
+$('player').addEventListener('timeupdate',()=>{if(Date.now()-lastRecorded>5000){lastRecorded=Date.now();saveWatchProgress()}});
+$('player').addEventListener('pause',saveWatchProgress);
+$('player').addEventListener('ended',()=>{saveWatchProgress();paint()});
+function updateDetailProgress(){
+ if(!chosen)return;
+ const p=progressOf(chosen),ratio=p?Math.min(100,Math.round(p.seconds/p.duration*100)):0;
+ $('detailProgressWrap').classList.toggle('hidden',!p);
+ $('detailProgressFill').style.width=ratio+'%';
+ $('detailProgressLabel').textContent=p?'Você assistiu '+ratio+'% • Continue de onde parou':'';
+ $('detailPlay').textContent=p?'▶ Continuar assistindo':episodes(chosen).length?'▶ Assistir episódio':'▶ Assistir';
+}
+function showVideo(url,title,resume=false){
+ const safe=https(url);if(!safe)return alert('Este vídeo ainda não tem um link HTTPS autorizado.');
+ if(currentVideo)saveWatchProgress();
+ const player=$('player');player.pause();currentVideo=safe;player.classList.remove('hidden');
+ player.src=safe;$('viewerTitle').textContent=title;$('viewer').classList.remove('hidden');
+ const saved=resume?progressOf(chosen):null;
+ if(saved?.url===safe){
+  const seek=Number(saved.seconds);
+  player.addEventListener('loadedmetadata',()=>{if(seek>0&&seek<player.duration-3)player.currentTime=seek},{once:true});
+ }
+ $('viewer').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function actionFeedback(text){$('detailFeedback').textContent=text}
+$('detailRate').onclick=()=>{
+ if(!chosen)return;
+ const score=prompt('Avalie este título de 1 a 5 estrelas:');
+ if(score===null)return;
+ if(!/^[1-5]$/.test(score.trim()))return actionFeedback('Escolha uma nota de 1 a 5.');
+ userRatings[chosen.id]=Number(score);try{localStorage.setItem(ratingKey,JSON.stringify(userRatings))}catch(e){}
+ actionFeedback('Sua avaliação: '+score+' de 5 estrelas (salva neste aparelho).');
+};
+$('detailShare').onclick=async()=>{
+ if(!chosen)return;
+ const url=new URL(location.href);url.hash='titulo='+encodeURIComponent(chosen.id);
+ try{if(navigator.share)await navigator.share({title:chosen.titulo||'CINEFLIX',url:url.href});
+ else if(navigator.clipboard){await navigator.clipboard.writeText(url.href);actionFeedback('Link copiado!')}
+ else actionFeedback('Compartilhe este endereço: '+url.href);
+ }catch(e){if(e.name!=='AbortError')actionFeedback('Não foi possível compartilhar.')}
+};
+$('detailDownload').onclick=()=>{
+ if(!chosen||chosen.downloadAutorizado!==true)return actionFeedback('Download indisponível para este título.');
+ const url=https(chosen.video);if(!url)return actionFeedback('Não há arquivo autorizado para baixar.');
+ const link=document.createElement('a');link.href=url;link.download=(chosen.titulo||'cineflix')+'.mp4';link.rel='noopener noreferrer';link.target='_blank';link.click();
+ actionFeedback('O download depende da autorização e das permissões do servidor do vídeo.');
+};
+$('detailReport').onclick=async()=>{
+ if(!chosen||!auth.currentUser)return actionFeedback('Entre com Google para enviar uma denúncia.');
+ const reason=prompt('Descreva o problema com este título (mínimo 5 caracteres):');
+ if(reason===null)return;
+ const message=reason.trim();
+ if(message.length<5||message.length>500)return actionFeedback('Escreva entre 5 e 500 caracteres.');
+ try{await addDoc(collection(db,'denuncias'),{tituloId:chosen.id,titulo:chosen.titulo||'',motivo:message,uid:auth.currentUser.uid,criadoEm:serverTimestamp()});actionFeedback('Denúncia enviada à administração.')}
+ catch(e){actionFeedback('Não foi possível enviar: '+(e.code||'erro de conexão'))}
+};
 let detailTrigger=null,detailScroll=0;
 function updateDetailFav(){if(!chosen)return;$('detailFav').textContent=favs.has(chosen.id)?'✓ Na minha lista':'＋ Minha lista';$('detailFav').setAttribute('aria-pressed',String(favs.has(chosen.id)))}
-function closeDetails(){if($('detailPage').classList.contains('hidden'))return;$('player').pause();$('detailPage').classList.add('hidden');document.body.classList.remove('title-open');document.querySelector('#catalogApp .layout').inert=false;document.querySelector('#catalogApp .top').inert=false;window.scrollTo(0,detailScroll);detailTrigger?.focus({preventScroll:true});syncRotation()}
+function closeDetails(){if($('detailPage').classList.contains('hidden'))return;saveWatchProgress();$('player').pause();$('detailPage').classList.add('hidden');document.body.classList.remove('title-open');document.querySelector('#catalogApp .layout').inert=false;document.querySelector('#catalogApp .top').inert=false;window.scrollTo(0,detailScroll);detailTrigger?.focus({preventScroll:true});syncRotation()}
 $('detailBack').onclick=()=>{if(history.state?.cineflixDetail)history.back();else closeDetails()};
 window.addEventListener('popstate',closeDetails);
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('detailPage').classList.contains('hidden'))$('detailBack').click()});
 function openItem(x){
  const wasClosed=$('detailPage').classList.contains('hidden');
  if(wasClosed){detailTrigger=document.activeElement;detailScroll=window.scrollY;history.pushState({cineflixDetail:true},'')}
- chosen=x;season=1;clearInterval(heroTimer);heroTimer=null;
+ saveWatchProgress();chosen=x;season=1;clearInterval(heroTimer);heroTimer=null;actionFeedback('');
+ $('detailTagline').textContent=contentCategory(x)==='serie'?'C SÉRIES':contentCategory(x)==='anime'?'C ANIMES':'C FILMES';
  $('detailTitle').textContent=x.titulo||'Sem título';$('detailDesc').textContent=x.descricao||'';
  $('detailMeta').textContent=[x.ano,x.categoria,...getGenres(x),x.lancamento===true?'LANÇAMENTO':''].filter(Boolean).join(' • ');
  const detailAge=ageBadge(x);if(detailAge)$('detailMeta').prepend(detailAge);
  const art=https(x.banner)||https(x.capa);$('detailArt').hidden=!art;if(art)$('detailArt').src=art;else $('detailArt').removeAttribute('src');
  $('viewerTitle').textContent=x.titulo||'Sem título';$('viewerDesc').textContent='';
  const eps=episodes(x),show=eps.length>0;
- $('seasonArea').classList.toggle('hidden',!show);$('player').pause();$('player').removeAttribute('src');$('player').load();$('player').classList.add('hidden');
+ $('seasonArea').classList.toggle('hidden',!show);$('player').pause();currentVideo='';$('player').removeAttribute('src');$('player').load();$('player').classList.add('hidden');
  $('detailPlayerSlot').append($('viewer'));$('viewer').classList.toggle('hidden',!show);
  if(show)showSeasons(x,eps);
  const playable=eps.find(e=>https(e.video));$('detailPlay').disabled=show?!playable:!https(x.video);
  $('detailPlay').textContent=show?'▶ Assistir episódio':'▶ Assistir';
  if($('detailPlay').disabled)$('detailPlay').textContent='Em breve';
- $('detailPlay').onclick=()=>{if(show&&playable)showVideo(playable.video,(x.titulo||'')+' — T'+playable.temporada+' E'+playable.numero);else showVideo(x.video,x.titulo)};
+ $('detailPlay').onclick=()=>{const p=progressOf(x);if(p?.url&&https(p.url))showVideo(p.url,p.title||x.titulo,true);else if(show&&playable)showVideo(playable.video,(x.titulo||'')+' — T'+playable.temporada+' E'+playable.numero);else showVideo(x.video,x.titulo)};
+ $('detailDownload').disabled=x.downloadAutorizado!==true||!https(x.video);
+ updateDetailProgress();if($('detailPlay').disabled)$('detailPlay').textContent='Em breve';
  updateDetailFav();$('detailRecommendations').replaceChildren();
  const recommendations=items.filter(v=>v.id!==x.id&&contentCategory(v)===contentCategory(x)).slice(0,10);
  $('detailRecommendationsWrap').hidden=!recommendations.length;
@@ -167,10 +238,61 @@ function openItem(x){
 }
 $('detailFav').onclick=()=>{if(!chosen)return;favs.has(chosen.id)?favs.delete(chosen.id):favs.add(chosen.id);localStorage.setItem(favKey,JSON.stringify([...favs]));updateDetailFav();paint()};
 function showSeasons(x,eps){let seasons=[...new Set(eps.map(e=>Number(e.temporada)))].sort((a,b)=>a-b);if(!seasons.includes(season))season=seasons[0];$('seasons').replaceChildren();for(let s of seasons){let b=document.createElement('button');b.className='season'+(s===season?' on':'');b.textContent='Temporada '+s;b.onclick=()=>{season=s;showSeasons(x,eps)};$('seasons').append(b)}$('episodes').replaceChildren();for(let ep of eps.filter(e=>Number(e.temporada)===season)){let row=document.createElement('div');row.className='episode';let text=document.createElement('span');text.textContent='Episódio '+ep.numero+(ep.titulo?' — '+ep.titulo:'');let b=document.createElement('button');b.className='btn';b.textContent='▶ Assistir';b.disabled=!https(ep.video);b.onclick=()=>showVideo(ep.video,(x.titulo||'')+' — T'+season+' E'+ep.numero);row.append(text,b);$('episodes').append(row)}}
-function paint(){let query=$('search').value.trim().toLowerCase();$('searchArea').classList.toggle('hidden',tab!=='pesquisar');$('hero').classList.toggle('hidden',tab!=='inicio');const titles={inicio:'Explore o catálogo',pesquisar:'Resultados da pesquisa',filmes:'Filmes',series:'Séries',animes:'Animes',favoritos:'Meus favoritos'};$('listTitle').textContent=titles[tab];let list=items.filter(x=>{let cat=contentCategory(x);return (!selectedGenre||getGenres(x).includes(selectedGenre))&&(tab==='inicio'||tab==='pesquisar'||tab==='favoritos'||(tab==='filmes'&&cat==='filme')||(tab==='series'&&cat==='serie')||(tab==='animes'&&cat==='anime'))&&(tab!=='favoritos'||favs.has(x.id))&&(!query||tab!=='pesquisar'||(x.titulo+' '+(x.descricao||'')+' '+cat+' '+getGenres(x).join(' ')).toLowerCase().includes(query))});$('cards').replaceChildren();$('status').textContent=list.length?list.length+' título(s) encontrado(s).':items.length?'Nenhum título nesta seção.':'Nenhum conteúdo cadastrado ainda.';
-const groups=[['filme','Filmes'],['serie','Séries'],['anime','Animes'],['','Outros títulos']];
-for(const [category,label] of groups){const group=list.filter(x=>contentCategory(x)===category);if(!group.length)continue;const section=document.createElement('section');section.className='catalog-section';const heading=document.createElement('h2');heading.textContent=label;const grid=document.createElement('div');grid.className='catalog-grid';section.append(heading,grid);$('cards').append(section);
-for(let x of group){let card=document.createElement('article');card.className='card';let pic=document.createElement('div');pic.className='imagebox';pic.tabIndex=0;pic.setAttribute('role','button');pic.setAttribute('aria-label','Ver detalhes de '+(x.titulo||'título'));pic.onclick=()=>openItem(x);pic.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openItem(x)}};pic.textContent='🎬';let u=https(x.capa);if(u){let img=document.createElement('img');img.src=u;img.alt='Capa de '+(x.titulo||'');img.loading='lazy';pic.append(img)}if(x.lancamento===true){let tag=document.createElement('span');tag.className='tag';tag.textContent='LANÇAMENTO';pic.append(tag)}let body=document.createElement('div');body.className='card-body';let name=document.createElement('h3');name.textContent=x.titulo||'Sem título';let meta=document.createElement('p');meta.className='meta';meta.textContent=[x.categoria||'Conteúdo',...getGenres(x)].join(' • ');let acts=document.createElement('div');acts.className='actions';let watch=document.createElement('button');watch.className='btn';watch.textContent='▶ Assistir';watch.onclick=()=>openItem(x);let fav=document.createElement('button');fav.className='btn alt';fav.textContent=favs.has(x.id)?'♥ Salvo':'♡ Favorito';fav.setAttribute('aria-label','Favoritar '+(x.titulo||'título'));fav.setAttribute('aria-pressed',String(favs.has(x.id)));fav.onclick=()=>{favs.has(x.id)?favs.delete(x.id):favs.add(x.id);localStorage.setItem(favKey,JSON.stringify([...favs]));paint()};acts.append(watch);body.append(name);const age=ageBadge(x);if(age)body.append(age);body.append(meta,acts);card.append(pic,body);grid.append(card)}}}
+function makeCard(x,number=null){
+ const card=document.createElement('article');card.className='card';
+ const pic=document.createElement('div');pic.className='imagebox';pic.tabIndex=0;pic.setAttribute('role','button');
+ pic.setAttribute('aria-label','Ver detalhes de '+(x.titulo||'título'));pic.onclick=()=>openItem(x);
+ pic.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openItem(x)}};
+ pic.textContent='🎬';const src=https(x.capa);
+ if(src){const img=document.createElement('img');img.src=src;img.alt='Capa de '+(x.titulo||'');img.loading='lazy';pic.append(img)}
+ const logo=document.createElement('span');logo.className='cine-mark';logo.textContent='C';logo.setAttribute('aria-label','CINEFLIX');pic.append(logo);
+ if(number!==null){const rank=document.createElement('span');rank.className='cine-top';rank.textContent='TOP '+number;pic.append(rank)}
+ const recent=x.criadoEm?.toMillis?.()>Date.now()-30*86400000;
+ const p=progressOf(x);
+ if(p){const bar=document.createElement('div');bar.className='cine-progress';const fill=document.createElement('span');fill.style.width=Math.min(100,Math.round(p.seconds/p.duration*100))+'%';bar.append(fill);pic.append(bar)}
+ else if(x.lancamento||recent){const ribbon=document.createElement('span');ribbon.className='cine-ribbon'+(!x.lancamento?' recent':'');ribbon.textContent=x.lancamento?'NOVO LANÇAMENTO':'ADICIONADO RECENTEMENTE';pic.append(ribbon)}
+ const body=document.createElement('div');body.className='card-body';
+ const name=document.createElement('h3');name.textContent=x.titulo||'Sem título';
+ const meta=document.createElement('p');meta.className='meta';meta.textContent=[x.categoria||'Conteúdo',...getGenres(x)].join(' • ');
+ const actions=document.createElement('div');actions.className='actions';
+ const watch=document.createElement('button');watch.className='btn';watch.textContent=p?'▶ Continuar':'▶ Assistir';watch.onclick=()=>openItem(x);actions.append(watch);
+ body.append(name);const age=ageBadge(x);if(age)body.append(age);body.append(meta,actions);card.append(pic,body);return card;
+}
+function paint(){
+ const queryText=$('search').value.trim().toLowerCase();
+ $('searchArea').classList.toggle('hidden',tab!=='pesquisar');$('hero').classList.toggle('hidden',tab!=='inicio');
+ const titles={inicio:'Explore o catálogo',pesquisar:'Resultados da pesquisa',filmes:'Filmes',series:'Séries',animes:'Animes',favoritos:'Meus favoritos'};
+ $('listTitle').textContent=titles[tab];
+ const list=items.filter(x=>{
+  const cat=contentCategory(x);
+  return (!selectedGenre||getGenres(x).includes(selectedGenre))
+   &&(tab==='inicio'||tab==='pesquisar'||tab==='favoritos'||(tab==='filmes'&&cat==='filme')||(tab==='series'&&cat==='serie')||(tab==='animes'&&cat==='anime'))
+   &&(tab!=='favoritos'||favs.has(x.id))
+   &&(!queryText||tab!=='pesquisar'||(String(x.titulo||'')+' '+(x.descricao||'')+' '+cat+' '+getGenres(x).join(' ')).toLowerCase().includes(queryText));
+ });
+ $('cards').replaceChildren();$('status').textContent=list.length?list.length+' título(s) encontrado(s).':items.length?'Nenhum título nesta seção.':'Nenhum conteúdo cadastrado ainda.';
+ function section(label,entries,description='',ranking=false){
+  if(!entries.length)return;
+  const wrap=document.createElement('section');wrap.className='catalog-section';
+  const head=document.createElement('h2');head.textContent=label;wrap.append(head);
+  if(description){const note=document.createElement('p');note.textContent=description;wrap.append(note)}
+  const grid=document.createElement('div');grid.className='catalog-grid';
+  entries.forEach((x,i)=>grid.append(makeCard(x,ranking?i+1:null)));wrap.append(grid);$('cards').append(wrap);
+ }
+ if(tab==='inicio'&&!selectedGenre){
+  const continuing=list.filter(x=>progressOf(x)).sort((a,b)=>watchProgress[b.id].updated-watchProgress[a.id].updated);
+  section('▶ Continue assistindo',continuing,'Retome de onde parou neste navegador.');
+  section('Novidades no CINEFLIX',list.filter(x=>x.lancamento||x.criadoEm?.toMillis?.()>Date.now()-30*86400000).slice(0,15));
+  section('10 destaques para assistir',list.slice().sort((a,b)=>(b.criadoEm?.toMillis?.()||0)-(a.criadoEm?.toMillis?.()||0)).slice(0,10),'Destaques do catálogo, não um ranking de audiência.',true);
+  section('Séries para maratonar',list.filter(x=>contentCategory(x)==='serie'));
+  section('Filmes',list.filter(x=>contentCategory(x)==='filme'));
+  section('Animes',list.filter(x=>contentCategory(x)==='anime'));
+ }else{
+  for(const [cat,label] of [['filme','Filmes'],['serie','Séries'],['anime','Animes'],['','Outros títulos']]){
+   section(label,list.filter(x=>contentCategory(x)===cat));
+  }
+ }
+}
 for(let b of document.querySelectorAll('nav button'))b.onclick=()=>{tab=b.dataset.tab;document.querySelectorAll('nav button').forEach(v=>v.classList.toggle('on',v===b));paint();if(tab==='pesquisar')$('search').focus();window.scrollTo({top:0,behavior:'smooth'})};$('search').oninput=paint;$('heroExplore').onclick=()=>document.getElementById('listTitle').scrollIntoView({behavior:'smooth'});
 let featuredIndex=0,heroTimer=null,initialFeaturedPicked=false,rotationPaused=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 // Escolhe uma categoria diferente da última visita, quando houver alternativas.
