@@ -130,20 +130,25 @@ const $=id=>document.getElementById(id),app=initializeApp(firebaseConfig),auth=g
 // Mantém a sessão Google entre aberturas; o usuário só sai ao escolher Sair.
 const authPersistenceReady=setPersistence(auth,browserLocalPersistence);let items=[],tab='inicio',chosen=null,season=1;const favKey='cineflix-favoritos',favs=new Set(JSON.parse(localStorage.getItem(favKey)||'[]'));
 // Presença aproximada: uma entrada por conta Google, renovada enquanto a página estiver visível.
-let presenceTimer=null;
-function stopPresence(){if(presenceTimer){clearInterval(presenceTimer);presenceTimer=null}}
-async function sendPresence(){
- const user=auth.currentUser;
- if(!user||document.hidden)return;
- try{await setDoc(doc(db,'presenca',user.uid),{uid:user.uid,vistoEm:serverTimestamp()})}
- catch(e){console.warn('Presença indisponível:',e.code||e.message)}
+
+let visitorTimer=null;
+function visitorDay(){return new Intl.DateTimeFormat('en-CA',{timeZone:'America/Sao_Paulo',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date())}
+async function recordVisitorActivity(){
+ const user=auth.currentUser;if(!user||document.hidden||!navigator.onLine)return;
+ const dia=visitorDay();
+ const results=await Promise.allSettled([
+  setDoc(doc(db,'presenca',user.uid),{uid:user.uid,vistoEm:serverTimestamp()}),
+  setDoc(doc(db,'acessosDiarios',user.uid+'_'+dia),{uid:user.uid,nome:(user.displayName||'Visitante').slice(0,80),dia,vistoEm:serverTimestamp()})
+ ]);
+ for(const result of results)if(result.status==='rejected')console.warn('Registro de atividade indisponível:',result.reason?.code);
 }
-function startPresence(u){stopPresence();if(!u)return;sendPresence();presenceTimer=setInterval(sendPresence,60000)}
-document.addEventListener('visibilitychange',()=>{if(!document.hidden&&auth.currentUser)sendPresence()});
+function startVisitorPresence(user){clearInterval(visitorTimer);visitorTimer=null;if(user){recordVisitorActivity();visitorTimer=setInterval(recordVisitorActivity,60000)}}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)recordVisitorActivity()});
+window.addEventListener('online',recordVisitorActivity);
 const https=x=>{try{let u=new URL(x);return u.protocol==='https:'?u.href:null}catch{return null}};
 $('loginBtn').onclick=async()=>{window.CineflixIntro.unlock();try{await authPersistenceReady;await signInWithPopup(auth,new GoogleAuthProvider())}catch(e){if(e.code!=='auth/popup-closed-by-user')alert('Não foi possível entrar: '+e.code)}};
 $('logoutBtn').onclick=()=>{closeDetails();signOut(auth)};
-onAuthStateChanged(auth,u=>{startPresence(u);$('loginBtn').classList.toggle('hidden',!!u);$('logoutBtn').classList.toggle('hidden',!u);$('who').textContent=u?'Olá, '+(u.displayName||'visitante'):'';window.CineflixIntro.setUser(u)},()=>window.CineflixIntro.authError());
+onAuthStateChanged(auth,u=>{startVisitorPresence(u);$('loginBtn').classList.toggle('hidden',!!u);$('logoutBtn').classList.toggle('hidden',!u);$('who').textContent=u?'Olá, '+(u.displayName||'visitante'):'';window.CineflixIntro.setUser(u)},()=>window.CineflixIntro.authError());
 $('welcomeGoogle').onclick = () => $('loginBtn').click();
 
 
