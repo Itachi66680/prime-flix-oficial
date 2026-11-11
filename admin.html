@@ -21,8 +21,7 @@
 .access-message{padding:11px 13px;background:#252835;border-radius:12px;overflow-wrap:anywhere}
 .access-message strong{display:block}.access-message small{display:block;color:#bcc1cf;margin-top:5px}
 .access-message.online{border-left:3px solid #21e78b}
-</style></head><body><header><strong>CINEFLIX</strong><a href="./index.html">← Voltar ao site</a></header><main><div class="admin-headline"><h1>👑 Administração</h1><span id="onlineCount" class="online-count hidden" aria-live="polite" title="Contas Google com atividade nos últimos 3 minutos"><span class="dot"></span><span class="value" id="onlineValue">—</span> online</span></div><section id="accessLog" class="access-log hidden" aria-labelledby="accessTitle"><h2 id="accessTitle">👥 Histórico de acessos</h2><label for="accessDay">Dia dos acessos<input id="accessDay" type="date"></label><p class="help">Um registro por pessoa a cada dia, com a última atividade. Horário de Brasília. Online = atividade nos últimos 3 minutos.</p><p id="accessState" role="status"></p><div id="accessMessages" class="access-messages" aria-label="Pessoas que acessaram"></div></section><p>Adicione filmes, séries e animes. Cada série ou anime pode ter temporadas e episódios publicados aos poucos.</p><section class="box" id="loginBox"><h2>Entrar como administrador</h2><p>Utilize a conta Google autorizada para administrar o catálogo.</p><button id="login">Entrar com Google</button><p id="loginState" class="status" role="status"></p></section><div id="protected" class="hidden"><section class="box"><span id="who"></span> <button class="alt" id="logout">Sair</button></section><section class="box"><button type="button" id="openChat" class="chat-open">💬 Chat da equipe</button><p class="help">Converse com os administradores autorizados do CINEFLIX. Fotos e arquivos pequenos: até 400 KB, sem Storage.</p></section><section class="box hidden" id="teamBox"><h2>👑 Gerenciar administradores</h2><div class="team-row"><div><strong>Vinícios</strong><small>Proprietário • acesso permanente</small></div><span class="owner-tag">👑 Dono</span></div><h3>🛡️ Administradores</h3><div id="teamList"></div><p id="teamListState" class="team-state" role="status"></p><form id="teamForm"><div class="row"><label>Nome do administrador<input id="teamName" maxlength="80" required autocomplete="off" placeholder="Nome"></label><label>E-mail da conta Google<input id="teamEmail" type="email" maxlength="254" required autocomplete="off" placeholder="exemplo@gmail.com"></label></div><button id="teamAdd" type="submit">+ Adicionar administrador</button><p class="help">A conta Google informada poderá editar o catálogo depois de entrar. Somente o dono pode adicionar ou remover administradores.</p><p id="teamStatus" class="status" role="status"></p></form></section><section class="box"><h2 id="formHeading">Publicar novo título</h2><form id="form"><div class="row"><label>Título <input name="titulo" maxlength="120" required placeholder="Nome do filme ou anime"></label><label>Tipo <select name="categoria"><option>Filme</option><option>Série</option><option>Anime</option></select></label></div><fieldset style="border:1px solid #464755;border-radius:12px;margin:16px 0;padding:16px"><legend>Gêneros</legend><p class="help">Selecione um ou mais gêneros para ajudar as pessoas a encontrar este título.</p><div id="genreOptions" class="genre-options"></div></fieldset><label>Classificação indicativa <select name="classificacao"><option value="">Não informada</option><option value="L">Livre</option><option value="10">10 anos</option><option value="12">12 anos</option><option value="14">14 anos</option><option value="16">16 anos</option><option value="18">18 anos</option></select><span class="help">Informe a classificação oficial do título.</span></label><label>Descrição <textarea name="descricao" maxlength="1500"></textarea></label><div class="row"><label>URL da capa (HTTPS) <input name="capa" type="url" placeholder="https://.../capa.jpg"></label><label>URL do vídeo (HTTPS, para filmes) <input name="video" type="url" placeholder="https://.../video.mp4"></label></div><label><input type="checkbox" name="lancamento" style="display:inline;width:auto;margin-right:7px">Mostrar etiqueta LANÇAMENTO</label><label><input type="checkbox" name="downloadAutorizado" style="display:inline;width:auto;margin-right:7px">Permitir download do vídeo (somente se você tiver direito de disponibilizá-lo para baixar)</label><label><input type="checkbox" name="novoEpisodio" style="display:inline;width:auto;margin-right:7px">Destacar NOVO EPISÓDIO (para série ou anime)</label><fieldset style="border:1px solid #464755;border-radius:12px"><legend>Temporadas e episódios (séries e animes)</legend><p class="help">Você pode começar só com o episódio 1. Depois abra “Editar” e acrescente outros episódios na ordem desejada. Cada episódio precisa ter URL HTTPS própria.</p><div id="epFields"></div><button type="button" id="addEp" class="alt">+ Adicionar episódio</button></fieldset><div style="margin-top:15px"><button type="submit" id="save">Publicar título</button><button type="button" id="cancel" class="alt hidden">Cancelar edição</button></div><p id="formStatus" class="status" role="status"></p></form></section><section class="box"><h2>Catálogo cadastrado</h2><label class="catalog-search" for="catalogSearch">Pesquisar no catálogo</label><input id="catalogSearch" type="search" placeholder="Digite o nome do filme, série ou anime" autocomplete="off" aria-controls="list"><p id="listStatus" role="status" aria-live="polite">Carregando títulos…</p><div id="list"></div></section></div></main><section id="chatPanel" class="chat-panel hidden" role="dialog" aria-modal="true" aria-label="Chat da equipe CINEFLIX"><div class="chat-top"><button type="button" id="closeChat" aria-label="Voltar para administração">←</button><div><strong>💬 Equipe CINEFLIX</strong><small>👑 Vinícios • Dono | 🛡️ Administradores</small></div></div><p id="chatInfo" class="chat-hint" role="status">Chat exclusivo da equipe autorizada.</p><div id="chatMessages" class="chat-messages" role="log" aria-live="polite" aria-label="Mensagens da equipe"></div><div id="chatAttachment" class="chat-attachment hidden"><span id="chatAttachmentName"></span><button id="chatRemoveAttachment" type="button" aria-label="Remover anexo">✕</button></div><form id="chatForm" class="chat-compose"><input id="chatFile" class="chat-file-picker" type="file" accept="image/jpeg,image/png,image/webp,image/gif,application/pdf,text/plain,.pdf,.txt" aria-label="Escolher foto ou arquivo pequeno"><button id="chatPickFile" class="chat-attach" type="button" aria-label="Anexar arquivo ou foto">＋</button><textarea id="chatInput" maxlength="2000" rows="1" placeholder="Digite uma mensagem..." aria-label="Mensagem"></textarea><button type="submit" id="chatSend" aria-label="Enviar mensagem">➤</button></form></section>
-<script type="module">
+</style></head><body><header><strong>CINEFLIX</strong><a href="./index.html">← Voltar ao site</a></header><main><div class="admin-headline"><h1>👑 Administração</h1><span id="onlineCount" class="online-count hidden" aria-live="polite" title="Contas Google com atividade nos últimos 3 minutos"><span class="dot"></span><span class="value" id="onlineValue">—</span> online</span></div><section id="accessLog" class="access-log hidden" aria-labelledby="accessTitle"><h2 id="accessTitle">👥 Histórico de acessos</h2><label for="accessDay">Dia dos acessos<input id="accessDay" type="date"></label><p class="help">Um registro por pessoa a cada dia, com a última atividade. Horário de Brasília. Online = atividade nos últimos 3 minutos.</p><p id="accessState" role="status"></p><div id="accessMessages" class="access-messages" aria-label="Pessoas que acessaram"></div></section><p>Adicione filmes, séries e animes. Cada série ou anime pode ter temporadas e episódios publicados aos poucos.</p><section class="box" id="loginBox"><h2>Entrar como administrador</h2><p>Utilize a conta Google autorizada para administrar o catálogo.</p><button id="login">Entrar com Google</button><p id="loginState" class="status" role="status"></p></section><div id="protected" class="hidden"><section class="box"><span id="who"></span> <button class="alt" id="logout">Sair</button></section><section class="box hidden" id="teamBox"><h2>👑 Gerenciar administradores</h2><div class="team-row"><div><strong>Vinícios</strong><small>Proprietário • acesso permanente</small></div><span class="owner-tag">👑 Dono</span></div><h3>🛡️ Administradores</h3><div id="teamList"></div><p id="teamListState" class="team-state" role="status"></p><form id="teamForm"><div class="row"><label>Nome do administrador<input id="teamName" maxlength="80" required autocomplete="off" placeholder="Nome"></label><label>E-mail da conta Google<input id="teamEmail" type="email" maxlength="254" required autocomplete="off" placeholder="exemplo@gmail.com"></label></div><button id="teamAdd" type="submit">+ Adicionar administrador</button><p class="help">A conta Google informada poderá editar o catálogo depois de entrar. Somente o dono pode adicionar ou remover administradores.</p><p id="teamStatus" class="status" role="status"></p></form></section><section class="box"><h2 id="formHeading">Publicar novo título</h2><form id="form"><div class="row"><label>Título <input name="titulo" maxlength="120" required placeholder="Nome do filme ou anime"></label><label>Tipo <select name="categoria"><option>Filme</option><option>Série</option><option>Anime</option></select></label></div><fieldset style="border:1px solid #464755;border-radius:12px;margin:16px 0;padding:16px"><legend>Gêneros</legend><p class="help">Selecione um ou mais gêneros para ajudar as pessoas a encontrar este título.</p><div id="genreOptions" class="genre-options"></div></fieldset><label>Classificação indicativa <select name="classificacao"><option value="">Não informada</option><option value="L">Livre</option><option value="10">10 anos</option><option value="12">12 anos</option><option value="14">14 anos</option><option value="16">16 anos</option><option value="18">18 anos</option></select><span class="help">Informe a classificação oficial do título.</span></label><label>Descrição <textarea name="descricao" maxlength="1500"></textarea></label><div class="row"><label>URL da capa (HTTPS) <input name="capa" type="url" placeholder="https://.../capa.jpg"></label><label>URL do vídeo (HTTPS, para filmes) <input name="video" type="url" placeholder="https://.../video.mp4"></label></div><label><input type="checkbox" name="lancamento" style="display:inline;width:auto;margin-right:7px">Mostrar etiqueta LANÇAMENTO</label><label><input type="checkbox" name="downloadAutorizado" style="display:inline;width:auto;margin-right:7px">Permitir download do vídeo (somente se você tiver direito de disponibilizá-lo para baixar)</label><label><input type="checkbox" name="novoEpisodio" style="display:inline;width:auto;margin-right:7px">Destacar NOVO EPISÓDIO (para série ou anime)</label><fieldset style="border:1px solid #464755;border-radius:12px"><legend>Temporadas e episódios (séries e animes)</legend><p class="help">Você pode começar só com o episódio 1. Depois abra “Editar” e acrescente outros episódios na ordem desejada. Cada episódio precisa ter URL HTTPS própria.</p><div id="epFields"></div><button type="button" id="addEp" class="alt">+ Adicionar episódio</button></fieldset><div style="margin-top:15px"><button type="submit" id="save">Publicar título</button><button type="button" id="cancel" class="alt hidden">Cancelar edição</button></div><p id="formStatus" class="status" role="status"></p></form></section><section class="box"><h2>Catálogo cadastrado</h2><label class="catalog-search" for="catalogSearch">Pesquisar no catálogo</label><input id="catalogSearch" type="search" placeholder="Digite o nome do filme, série ou anime" autocomplete="off" aria-controls="list"><p id="listStatus" role="status" aria-live="polite">Carregando títulos…</p><div id="list"></div></section></div></main><script type="module">
 import {initializeApp} from 'https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js';
 import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged} from 'https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js';
 import {getFirestore,collection,onSnapshot,addDoc,updateDoc,deleteDoc,doc,setDoc,getDoc,serverTimestamp,query,orderBy,limit,where} from 'https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js';
@@ -102,14 +101,14 @@ function showAccess(u,allowed){
  if(owner&&allowed)startOnlineCount();else endOnlineCount();
  $('loginState').textContent=!allowed?'Essa conta Google não está autorizada. Peça ao dono Vinícios para adicionar seu e-mail.':'';
  if(stop){stop();stop=null}
- if(!allowed){closeChat();records.clear();$('list').replaceChildren();return}
+ if(!allowed){records.clear();$('list').replaceChildren();return}
  $('who').textContent=(owner?'👑 Dono: Vinícios':'🛡️ Administrador: '+(u.displayName||'Conta Google'))+' • '+(u.email||'');
  stop=onSnapshot(ref,snap=>{records.clear();snap.forEach(d=>records.set(d.id,d.data()));renderCatalog()},e=>$('listStatus').textContent='Erro ao carregar catálogo: '+e.code);
 }
 onAuthStateChanged(auth,u=>{
  startVisitorPresence(u);
  const token=++sessionToken;
- closeChat();if(stop){stop();stop=null}if(stopRole){stopRole();stopRole=null}if(stopTeam){stopTeam();stopTeam=null}
+ if(stop){stop();stop=null}if(stopRole){stopRole();stopRole=null}if(stopTeam){stopTeam();stopTeam=null}
  hasAccess=false;endOnlineCount();records.clear();$('list').replaceChildren();
  $('protected').classList.add('hidden');$('teamBox').classList.add('hidden');
  if(!u){$('loginBox').classList.remove('hidden');$('loginState').textContent='';return}
@@ -150,109 +149,6 @@ $('teamForm').onsubmit=async e=>{
  catch(err){$('teamStatus').textContent='Erro ao autorizar: '+err.code+' — confira as regras do Firestore.';}
  finally{$('teamAdd').disabled=false}
 };
-
-const chatCollection=collection(db,'chatEquipe'),attachmentCollection=collection(db,'chatAnexos');
-const allowedFiles=new Set(['image/jpeg','image/png','image/webp','image/gif','application/pdf','text/plain']);
-const fileExt={'image/jpeg':'jpg','image/png':'png','image/webp':'webp','image/gif':'gif','application/pdf':'pdf','text/plain':'txt'};
-let selectedChatFile=null;
-const chatObjectUrls=new Set();
-function cleanupChatUrls(){for(const url of chatObjectUrls)URL.revokeObjectURL(url);chatObjectUrls.clear()}
-function selectChatFile(file){
- if(!file){selectedChatFile=null;$('chatAttachment').classList.add('hidden');$('chatFile').value='';return}
- if(!allowedFiles.has(file.type)||file.size>400*1024||file.size===0){$('chatInfo').textContent='Envie JPG, PNG, WebP, GIF, PDF ou TXT com até 400 KB.';$('chatFile').value='';return}
- selectedChatFile=file;$('chatAttachment').classList.remove('hidden');$('chatAttachmentName').textContent='📎 '+file.name+' • '+(file.size/1024/1024).toFixed(2)+' MB';
-}
-$('chatPickFile').onclick=()=>$('chatFile').click();
-$('chatFile').onchange=()=>selectChatFile($('chatFile').files?.[0]);
-$('chatRemoveAttachment').onclick=()=>selectChatFile(null);
-function readAsBase64(file){
- return new Promise((resolve,reject)=>{
-  const reader=new FileReader();
-  reader.onerror=()=>reject(new Error('Falha ao ler arquivo'));
-  reader.onload=()=>{const value=String(reader.result||'');resolve(value.slice(value.indexOf(',')+1))};
-  reader.readAsDataURL(file);
- });
-}
-async function showChatFile(button,file){
- if(!hasAccess||!auth.currentUser)return;
- button.disabled=true;
- try{
-  const snap=await getDoc(doc(db,'chatAnexos',file.id));
-  if(!snap.exists())throw new Error('Arquivo indisponível');
-  const saved=snap.data();
-  if(!allowedFiles.has(saved.tipo)||typeof saved.base64!=='string'||saved.base64.length>560000)throw new Error('Arquivo inválido');
-  const raw=atob(saved.base64);const bytes=new Uint8Array(raw.length);
-  for(let i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);
-  const blob=new Blob([bytes],{type:saved.tipo});
-  const url=URL.createObjectURL(blob);chatObjectUrls.add(url);
-  if(saved.tipo.startsWith('image/')){
-   const img=document.createElement('img');img.alt='Foto enviada no chat';img.src=url;button.replaceChildren(img);
-  }else{
-   const link=document.createElement('a');link.href=url;link.download=saved.nome||'arquivo';link.textContent='⬇ Baixar '+(saved.nome||'arquivo');link.style.color='white';button.replaceWith(link);
-  }
- }catch(e){button.textContent='Falha ao abrir arquivo: '+(e.code||e.message);button.disabled=false}
-}
-
-function closeChat(){
- if(stopChat){stopChat();stopChat=null}cleanupChatUrls();selectChatFile(null);
- $('chatPanel').classList.add('hidden');
- document.body.style.overflow='';
-}
-$('closeChat').onclick=closeChat;
-$('openChat').onclick=()=>{
- if(!hasAccess||!auth.currentUser)return;
- $('chatPanel').classList.remove('hidden');document.body.style.overflow='hidden';
- $('chatMessages').replaceChildren();$('chatInfo').textContent='Carregando mensagens…';
- if(stopChat)stopChat();
- stopChat=onSnapshot(query(chatCollection,orderBy('criadoEm','desc'),limit(100)),snap=>{
-  const area=$('chatMessages'),atBottom=area.scrollHeight-area.scrollTop-area.clientHeight<120;
-  cleanupChatUrls();area.replaceChildren();
-  const msgs=snap.docs.slice().reverse();
-  for(const d of msgs){
-   const data=d.data(),bubble=document.createElement('div'),sender=document.createElement('div'),body=document.createElement('div'),time=document.createElement('div');
-   const mine=data.uid===auth.currentUser?.uid;
-   bubble.className='chat-bubble'+(mine?' mine':'');
-   sender.className='chat-sender';body.className='chat-text';time.className='chat-time';
-   sender.textContent=data.uid===ADMIN_UID?'👑 Vinícios • Dono':'🛡️ '+(typeof data.nome==='string'?data.nome:'Administrador');
-   body.textContent=typeof data.texto==='string'?data.texto:'';
-   const date=data.criadoEm?.toDate?.();
-   time.textContent=date?date.toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'Enviando…';
-   bubble.append(sender,body);
-   if(data.anexo&&typeof data.anexo.id==='string'&&/^[A-Za-z0-9]{15,32}$/.test(data.anexo.id)&&typeof data.anexo.nome==='string'&&typeof data.anexo.tipo==='string'){
-    const attachment=document.createElement('button');attachment.type='button';attachment.className='chat-file';attachment.textContent=(data.anexo.tipo.startsWith('image/')?'🖼️ Ver foto: ':'📎 Abrir arquivo: ')+data.anexo.nome.slice(0,100);
-    attachment.onclick=()=>showChatFile(attachment,data.anexo);bubble.append(attachment);
-   }
-   bubble.append(time);area.append(bubble);
-  }
-  $('chatInfo').textContent=msgs.length?'Conversa privada da equipe • últimas 100 mensagens':'Nenhuma mensagem. Comece a conversa!';
-  if(atBottom||msgs.length<=3)area.scrollTop=area.scrollHeight;
- },err=>$('chatInfo').textContent='Não foi possível abrir o chat: '+err.code+'. Verifique as regras do Firestore.');
- $('chatInput').focus();
-};
-$('chatForm').onsubmit=async e=>{
- e.preventDefault();
- const u=auth.currentUser,texto=$('chatInput').value.trim(),file=selectedChatFile;
- if(!hasAccess||!u||(!texto&&!file)||texto.length>2000)return;
- if(file&&(!allowedFiles.has(file.type)||file.size>400*1024||file.size===0))return;
- const btn=$('chatSend');btn.disabled=true;$('chatPickFile').disabled=true;
- $('chatInfo').textContent=file?'Enviando anexo pequeno…':'Enviando mensagem…';
- try{
-  let anexo;
-  if(file){
-   const base64=await readAsBase64(file);
-   if(base64.length>560000)throw new Error('Anexo excedeu o limite');
-   const attachmentDoc=doc(attachmentCollection);
-   await setDoc(attachmentDoc,{uid:u.uid,nome:file.name.slice(0,100),tipo:file.type,tamanho:file.size,base64,criadoEm:serverTimestamp()});
-   anexo={id:attachmentDoc.id,nome:file.name.slice(0,100),tipo:file.type,tamanho:file.size};
-  }
-  await addDoc(chatCollection,{uid:u.uid,nome:u.uid===ADMIN_UID?'Vinícios':(u.displayName||u.email||'Administrador').slice(0,80),texto,...(anexo?{anexo}:{}),criadoEm:serverTimestamp()});
-  $('chatInput').value='';selectChatFile(null);$('chatInfo').textContent='Mensagem enviada.';
- }catch(err){$('chatInfo').textContent='Falha ao enviar: '+(err.code||err.message)+'. Confira as regras do Firestore.'}
- finally{btn.disabled=false;$('chatPickFile').disabled=false}
-};
-$('chatInput').addEventListener('keydown',e=>{
- if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();$('chatForm').requestSubmit()}
-});
 
 function addEpisode(ep={}){let r=document.createElement('div');r.className='ep-row';let t=document.createElement('input');t.type='number';t.min='1';t.placeholder='Temporada';t.title='Temporada';t.value=ep.temporada||1;let n=document.createElement('input');n.type='number';n.min='1';n.placeholder='Nº episódio';n.title='Número do episódio';n.value=ep.numero||1;let name=document.createElement('input');name.className='wide';name.placeholder='Título do episódio';name.value=ep.titulo||'';let url=document.createElement('input');url.className='wide';url.type='url';url.placeholder='URL HTTPS do vídeo';url.value=ep.video||'';let del=document.createElement('button');del.className='danger';del.type='button';del.textContent='×';del.title='Remover episódio';del.onclick=()=>r.remove();r.append(t,n,name,url,del);$('epFields').append(r)}$('addEp').onclick=()=>addEpisode();
 function clear(){editId=null;$('form').reset();$('epFields').replaceChildren();$('formHeading').textContent='Publicar novo título';$('save').textContent='Publicar título';$('cancel').classList.add('hidden');$('formStatus').textContent=''}$('cancel').onclick=clear;
