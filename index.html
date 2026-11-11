@@ -132,12 +132,19 @@ const authPersistenceReady=setPersistence(auth,browserLocalPersistence);let item
 // Presença aproximada: uma entrada por conta Google, renovada enquanto a página estiver visível.
 
 let visitorTimer=null;
+async function emailFingerprint(email){
+ if(!email||!crypto?.subtle)return '';
+ const bytes=new TextEncoder().encode(email.trim().toLowerCase());
+ const hash=await crypto.subtle.digest('SHA-256',bytes);
+ return [...new Uint8Array(hash)].map(b=>b.toString(16).padStart(2,'0')).join('');
+}
 function visitorDay(){return new Intl.DateTimeFormat('en-CA',{timeZone:'America/Sao_Paulo',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date())}
 async function recordVisitorActivity(){
  const user=auth.currentUser;if(!user||document.hidden||!navigator.onLine)return;
  const dia=visitorDay();
+ const emailHash=await emailFingerprint(user.emailVerified?user.email:'');
  const results=await Promise.allSettled([
-  setDoc(doc(db,'presenca',user.uid),{uid:user.uid,vistoEm:serverTimestamp()}),
+  setDoc(doc(db,'presenca',user.uid),{uid:user.uid,emailHash,vistoEm:serverTimestamp()}),
   setDoc(doc(db,'acessosDiarios',user.uid+'_'+dia),{uid:user.uid,nome:(user.displayName||'Visitante').slice(0,80),dia,vistoEm:serverTimestamp()})
  ]);
  for(const result of results)if(result.status==='rejected')console.warn('Registro de atividade indisponível:',result.reason?.code);
