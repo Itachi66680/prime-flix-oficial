@@ -26,7 +26,7 @@ import {initializeApp} from 'https://www.gstatic.com/firebasejs/13.2.0/firebase-
 import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged} from 'https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js';
 import {getFirestore,collection,onSnapshot,addDoc,updateDoc,deleteDoc,doc,setDoc,getDoc,serverTimestamp,query,orderBy,limit,where} from 'https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js';
 import {firebaseConfig,ADMIN_UID} from './firebase-config.js';
-const $=id=>document.getElementById(id),app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app),ref=collection(db,'conteudos');let editId=null,records=new Map(),stop=null,stopRole=null,stopTeam=null,stopChat=null,stopPresence=null,presenceTicker=null,sessionToken=0,hasAccess=false;
+const $=id=>document.getElementById(id),app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app),ref=collection(db,'conteudos');let editId=null,records=new Map(),stop=null,stopRole=null,stopTeam=null,stopPresence=null,presenceTicker=null,sessionToken=0,hasAccess=false;
 const GENRES=["Ação", "Aventura", "Animação", "Comédia", "Crime", "Documentário", "Drama", "Família", "Fantasia", "Ficção científica", "Guerra", "História", "Mistério", "Musical", "Romance", "Suspense", "Terror", "Western"];
 function getGenres(x){const raw=x.generos??x.genero??[];return [...new Set((Array.isArray(raw)?raw:String(raw).split(/[,;]/)).map(v=>String(v).trim()).filter(Boolean))]}
 for(const genre of GENRES){const label=document.createElement('label'),input=document.createElement('input');input.type='checkbox';input.name='generos';input.value=genre;label.append(input,document.createTextNode(genre));$('genreOptions').append(label)}
