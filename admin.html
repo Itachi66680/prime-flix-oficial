@@ -174,7 +174,7 @@ function showAccess(u,allowed){
  $('loginBox').classList.toggle('hidden',allowed);
  $('protected').classList.toggle('hidden',!allowed);
  $('teamBox').classList.toggle('hidden',!owner);
- $('salesTotal').classList.toggle('hidden',!owner||!allowed);
+ $('salesTotal').classList.toggle('hidden',!allowed);
  if(owner&&allowed)startOnlineCount();else endOnlineCount();
  $('loginState').textContent=!allowed?'Essa conta Google não está autorizada. Peça ao dono Vinícios para adicionar seu e-mail.':'';
  if(stop){stop();stop=null}
