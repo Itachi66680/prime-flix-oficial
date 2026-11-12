@@ -509,6 +509,16 @@ onSnapshot(collection(db,'conteudos'),snap=>{
 <p id="vipDiscountResult" role="status" aria-live="polite" style="font-size:13px;color:#ffc96b;line-height:1.5">A ativação de cupons depende de validação segura no servidor.</p>
 <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;border-top:1px solid #564434;padding-top:12px"><span>Total previsto (30 dias)</span><strong id="vipDiscountTotal" style="font-size:24px;color:#ffe2a1">R$ 5,99</strong></div>
 <p style="font-size:12px;color:#c4b8aa">Com cupom válido: R$ 4,99. O preço só muda depois da aprovação do servidor de pagamentos.</p>
+</section><section id="pixVipSection" style="border:1px solid #66502f;border-radius:14px;padding:16px;margin:16px 0;background:#1e1a16;text-align:center">
+<strong style="font-size:20px;color:#ffe1a0">💠 Pagar VIP com Pix</strong>
+<p style="font-size:14px;color:#e1d6c5">Valor: <b style="color:#ffe1a0">R$ 5,99</b> por 30 dias</p>
+<img id="pixVipQr" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQkAAAEJAQAAAACvE+/JAAADcUlEQVR42u2aQY6rRhCGvzKW2rvmBu2LPJgcKxJ+Zh6W5hg5SsBzghwgUnOCNKu0JfCfBTPZvmU60vQGZGpRFH/99VeVTfzkvB746fky+TL5T0wWMztww8yOmNXbmcmOnCYzOxX4RldpXB5noMNN8xBp/Dpnk1TiB9jsBDec0o3lu7+YHZYjsNi5XLzMWeFhblz6QAOcSsTu8ePq+99Ofy9OBqDpZTu7UrOxUobrlO/+cXZKXaDxgzJesUR3X81elkt7srmHO3B6nx/nk8ysNHfRflKl3Pg+OKUquqcf5D6e9IW5m67SlCo5aQ1AFzJewtRTmrsH8Mf58Z3Nlra+oSkxY/Pl7Malp0QwrCGbBrkpdUGjX4ObUkfGFwkGrcFJa3CjX3FSH9xIJdpEKNFdxYwfYgbI7Q7gKmr0Q3QFutsH9/SKtKmKbs88KbqnX0ORzBCx1O040HP/jQBci4vuAXht87f6LS5tDaf3BExhxY1s51weM6Sr3CTJPemCe/ohShqinn5Qibxr5+VS31hevIuPA7+ezeou2C/zOp8KjG4V3ZS6kBu/htxQxR3AU4ICmSHtHItGL+WGDhq/4pQ6VCSRAV1w035XxYzvAYp0N1VySpXc00tOqcNNqQtFRvcA/mLc6ealSreZO1V8XMIR7hAKlDgJnFIljVzl9grxiV1XpN4FCE57p17pE8VlVrXb7KSVxerNMPUzMk0ZX17jjpS6XeC6KRHcpDXouTNwkQIyVcqthp0ZgKvc6IdIm7ri3D2Cf5zjD+BR/XX8k+aP45xJIJa3tUQwXOUkRTdJypaqqJEq5lZrkWUCsmkQrVZym6pImypl/BpKZAY4fatBv9e34H7QBfdad/PJEpSpdzGtgTZVck+ukjTIPankStS7lpvlOGv0K9nSZtyXfs7vepTYTUhyIwQaPshXklRqqqn/0AyT1qDR92AaoptUXqrtnbAb/UrGrwBV5GNWWqTE2SeQBBqv6JTAjVQqUpF9bn78EDXNR7hzjctVF+MOobRU+9z8sJ3t4PtAw9a6H3SBBuYSF1WbneA6ua2Gh9XweOEtPqx+U4nRBWBrs6XNsslF/6RDU9qK07v/mtx22CLryfelh4aOEsGwb37iCQj+6XtQzWwWjkVqBsBSpX3E0KZrlPaBqWJpVc2+/n7xZfI/NfkHQE+rTUvEKDMAAAAASUVORK5CYII=" alt="QR Code Pix de R$ 5,99 para Vinícios em Crixás" style="display:block;margin:12px auto;background:white;padding:8px;border-radius:10px;width:min(90%,270px);height:auto;image-rendering:pixelated">
+<p style="font-size:13px;color:#d8cfc4">Titular: Vinícios · Crixás–GO</p>
+<label for="pixVipCopy" style="display:block;text-align:left;font-size:13px;margin-bottom:7px;color:#d8cfc4">Pix Copia e Cola</label>
+<textarea id="pixVipCopy" rows="3" readonly style="width:100%;box-sizing:border-box;border:1px solid #716049;background:#0d0d14;border-radius:8px;color:white;padding:10px;font-size:12px;resize:none">00020126580014br.gov.bcb.pix0136e5be0f0f-a787-4390-9d92-942e2e211f9752040000530398654045.995802BR5908VINICIOS6006CRIXAS62070503***63040D58</textarea>
+<button id="pixVipCopyBtn" type="button" class="btn" style="width:100%;margin-top:10px;background:#e7132b">📋 Copiar código Pix</button>
+<p id="pixVipCopyStatus" aria-live="polite" style="font-size:12px;color:#d7c7b2"></p>
+<p style="font-size:12px;color:#ffc96b;line-height:1.6">Confira o destinatário e o valor no aplicativo do banco antes de pagar. Este QR Code é de R$ 5,99 e não aplica cupom. O VIP não é liberado automaticamente: o pagamento precisa ser confirmado.</p>
 </section><div style="border:1px solid #544427;border-radius:12px;padding:14px;margin:16px 0;background:#221c16"><strong>Teste do prazo de pagamento</strong><p style="font-size:12px;color:#d8cbb1">Simulação apenas: não cria cobrança nem libera o VIP.</p><div id="vipCountdown" style="font-size:34px;font-weight:900;font-variant-numeric:tabular-nums;text-align:center;color:#f6cf73">05:00</div><p id="vipCountdownStatus" role="status" style="font-size:12px;color:#d8cbb1;text-align:center">Inicie para testar a contagem regressiva.</p><button id="vipCountdownStart" type="button" class="btn" style="width:100%">Simular prazo de 5 minutos</button></div><button id="vipInfoDone" type="button" class="btn alt" style="width:100%">Fechar</button></dialog><style>
 @keyframes cineflixRedeemError {0%,100%{transform:translateX(0);box-shadow:0 18px 60px #000b}20%,60%{transform:translateX(-7px);box-shadow:0 0 0 8px #ff304044}40%,80%{transform:translateX(7px);box-shadow:0 0 0 8px #ff304044}}
 @keyframes cineflixRedeemSuccess {0%,100%{box-shadow:0 18px 60px #000b}35%,75%{box-shadow:0 0 0 10px #16d67666;background:#0c2c20}}
@@ -553,6 +563,13 @@ onSnapshot(collection(db,'conteudos'),snap=>{
     :'Digite um codiguin para verificar.';
    result.style.color='#ffc96b';
  });
+})();</script><script>(function(){
+const btn=document.getElementById('pixVipCopyBtn'),code=document.getElementById('pixVipCopy'),status=document.getElementById('pixVipCopyStatus');
+if(!btn||!code)return;
+btn.addEventListener('click',async()=>{
+try{await navigator.clipboard.writeText(code.value);status.textContent='✅ Código Pix copiado!';}
+catch(err){code.focus();code.select();status.textContent='Selecione e copie o código Pix exibido acima.';}
+});
 })();</script><script>(function(){const open=document.getElementById('vipInfoButton'),dialog=document.getElementById('vipInfoDialog'),close=document.getElementById('vipInfoClose'),done=document.getElementById('vipInfoDone');if(!open||!dialog)return;open.addEventListener('click',()=>{if(typeof dialog.showModal==='function')dialog.showModal();else dialog.setAttribute('open','')});for(const btn of [close,done])btn?.addEventListener('click',()=>dialog.close?.());dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close()})})();</script><script>(function(){
 const start=document.getElementById('vipCountdownStart'),count=document.getElementById('vipCountdown'),status=document.getElementById('vipCountdownStatus'),dialog=document.getElementById('vipInfoDialog');
 if(!start||!count||!status||!dialog)return;
