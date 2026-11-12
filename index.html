@@ -160,23 +160,67 @@ $('logoutBtn').onclick=()=>{closeDetails();$('profileMenu').classList.add('hidde
 $('profileButton').onclick=()=>{const menu=$('profileMenu');const opening=menu.classList.contains('hidden');menu.classList.toggle('hidden',!opening);$('profileButton').setAttribute('aria-expanded',String(opening));};
 document.addEventListener('click',e=>{if(!e.target.closest('#profileButton,#profileMenu')){$('profileMenu').classList.add('hidden');$('profileButton').setAttribute('aria-expanded','false')}});
 let vipCheckVersion=0;
-async function refreshVipBadge(user){
- const version=++vipCheckVersion,button=$('vipInfoButton');
- const plain=()=>{button.classList.remove('vip-active');button.textContent='★ VIP';button.setAttribute('aria-label','Ver assinatura VIP do CINEFLIX');};
- plain();
- if(!user?.email||!user.emailVerified)return;
- try{
-   const snap=await getDoc(doc(db,'vip_gratuito',user.email.trim().toLowerCase()));
-   if(version!==vipCheckVersion||auth.currentUser?.uid!==user.uid)return;
-   if(!snap.exists())return;
-   const grant=snap.data();
-   const valid=grant.email===user.email.trim().toLowerCase()&&(grant.permanente===true||(grant.permanente===false&&grant.expiraEm?.toMillis?.()>Date.now()));
-   if(!valid)return;
-   button.classList.add('vip-active');
-   button.innerHTML='<span class="vip-crown" aria-hidden="true">👑</span><span class="vip-word">VIP<span class="vip-state">ATIVO</span></span>';
-   button.setAttribute('aria-label','VIP gratuito ativo: ver detalhes');
- }catch(error){console.info('Status VIP não disponível para consulta:',error.code||'indisponível');}
+let vipGratisAtual=null;
+
+function atualizarJanelaVip(){
+  const dialog=$('vipInfoDialog'),title=$('vipInfoTitle'),done=$('vipInfoDone');
+  if(!dialog||!title)return;
+  let notice=$('vipStatusMessage');
+  if(!notice){
+    notice=document.createElement('p');
+    notice.id='vipStatusMessage';
+    notice.setAttribute('role','status');
+    notice.style.cssText='white-space:pre-line;line-height:1.7;padding:14px;border:1px solid #29c56f;border-radius:12px;background:#0d2a1d;color:#d4ffe5';
+    dialog.querySelector('div')?.after(notice);
+  }
+  if(!vipGratisAtual){
+    notice.hidden=true;
+    title.textContent='★ CINEFLIX VIP';
+    for(const child of dialog.children){if(child!==notice)child.hidden=false;}
+    return;
+  }
+  title.textContent='👑 CINEFLIX VIP ATIVO';
+  const expira=vipGratisAtual.expiraEm?.toDate?.();
+  notice.textContent='✅ Seu Gmail está autorizado ao VIP gratuito!\n'+
+    (vipGratisAtual.permanente===true?'♾️ Permanente, até revogação.':'📅 Válido até: '+expira.toLocaleString('pt-BR'))+
+    '\nObrigado por fazer parte do CINEFLIX!';
+  notice.hidden=false;
+  for(const child of dialog.children){
+    if(child!==notice&&child!==dialog.firstElementChild&&child!==done)child.hidden=true;
+  }
 }
+$('vipInfoButton').addEventListener('click',atualizarJanelaVip);
+
+async function refreshVipBadge(user){
+  const version=++vipCheckVersion,button=$('vipInfoButton');
+  vipGratisAtual=null;
+  button.classList.remove('vip-active');
+  button.textContent='★ VIP';
+  button.setAttribute('aria-label','Ver assinatura VIP do CINEFLIX');
+  atualizarJanelaVip();
+  if(!user?.email||!user.emailVerified)return;
+  try{
+    const email=user.email.trim().toLowerCase();
+    const snap=await getDoc(doc(db,'vip_gratuito',email));
+    if(version!==vipCheckVersion||auth.currentUser?.uid!==user.uid)return;
+    if(!snap.exists())return;
+    const grant=snap.data();
+    const vencimento=grant.expiraEm?.toMillis?.();
+    const valido=grant.email===email&&(
+      grant.permanente===true||
+      (grant.permanente===false&&typeof vencimento==='number'&&vencimento>Date.now())
+    );
+    if(!valido)return;
+    vipGratisAtual=grant;
+    button.classList.add('vip-active');
+    button.innerHTML='<span class="vip-crown" aria-hidden="true">👑</span><span class="vip-word">VIP<span class="vip-state">ATIVO</span></span>';
+    button.setAttribute('aria-label','VIP gratuito ativo: ver detalhes');
+    atualizarJanelaVip();
+  }catch(error){console.info('Status VIP não disponível para consulta:',error.code||'indisponível');}
+}
+document.addEventListener('visibilitychange',()=>{
+  if(!document.hidden&&auth.currentUser)refreshVipBadge(auth.currentUser);
+});
 onAuthStateChanged(auth,u=>{refreshVipBadge(u);startVisitorPresence(u);$('loginBtn').classList.toggle('hidden',!!u);$('profileButton').classList.toggle('hidden',!u);$('profileMenu').classList.add('hidden');$('profileButton').setAttribute('aria-expanded','false');$('profileName').textContent=u?(u.displayName||u.email||'Conta Google'):'';const avatar=$('profilePhoto');if(u){const photo=u.photoURL;avatar.src=photo&&photo.startsWith('https://')?photo:'./icone-192.png';}else{avatar.removeAttribute('src');}$('who').textContent='';window.CineflixIntro.setUser(u)},()=>window.CineflixIntro.authError());
 $('welcomeGoogle').onclick = () => $('loginBtn').click();
 
