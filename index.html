@@ -563,7 +563,7 @@ onSnapshot(collection(db,'conteudos'),snap=>{
   if(!form||!input||!result||!total||!qr||!code||!copy)return;
   const PIX_KEY='e5be0f0f-a787-4390-9d92-942e2e211f97';
   // O endpoint deve verificar códigos ativos no servidor, não em JS público.
-  const CUPOM_API_URL='';
+  const CUPOM_API_URL='https://cineflix-vip.coutinhovinicioscoutinhodossan.workers.dev/api/coupons/validate';
   let activeCoupon=null;
   function tlv(tag,value){return tag+String(value.length).padStart(2,'0')+value;}
   function crc16(str){
