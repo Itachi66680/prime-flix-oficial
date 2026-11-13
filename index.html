@@ -223,6 +223,38 @@ document.addEventListener('visibilitychange',()=>{
 });
 onAuthStateChanged(auth,u=>{refreshVipBadge(u);startVisitorPresence(u);$('loginBtn').classList.toggle('hidden',!!u);$('profileButton').classList.toggle('hidden',!u);$('profileMenu').classList.add('hidden');$('profileButton').setAttribute('aria-expanded','false');$('profileName').textContent=u?(u.displayName||u.email||'Conta Google'):'';const avatar=$('profilePhoto');if(u){const photo=u.photoURL;avatar.src=photo&&photo.startsWith('https://')?photo:'./icone-192.png';}else{avatar.removeAttribute('src');}$('who').textContent='';window.CineflixIntro.setUser(u)},()=>window.CineflixIntro.authError());
 $('welcomeGoogle').onclick = () => $('loginBtn').click();
+// Solicitações VIP: uma solicitação por conta, contato fornecido voluntariamente.
+// As regras Firestore devem limitar leitura ao dono e escrita ao próprio usuário.
+function syncVipRequestEmail(){
+ const email=$('vipRequestEmail'),submit=$('vipRequestSubmit');
+ if(!email||!submit)return;
+ const u=auth.currentUser;
+ email.value=u?.emailVerified?u.email:'';
+ submit.textContent=u?.emailVerified?'Enviar solicitação VIP':'Entre com Google para solicitar';
+}
+$('vipRequestForm').addEventListener('submit',async e=>{
+ e.preventDefault();
+ const u=auth.currentUser,status=$('vipRequestResult'),button=$('vipRequestSubmit');
+ if(!u?.email||!u.emailVerified){status.textContent='Entre com uma conta Google com e-mail verificado para continuar.';return;}
+ const whatsapp=$('vipRequestPhone').value.replace(/\\D/g,'');
+ if(!/^\\d{10,11}$/.test(whatsapp)){
+   status.textContent='Informe seu WhatsApp com DDD (10 ou 11 dígitos).';return;
+ }
+ if(!$('vipRequestConsent').checked){status.textContent='Precisamos do seu consentimento para enviar os dados.';return;}
+ button.disabled=true;status.textContent='Enviando solicitação...';
+ try{
+   await setDoc(doc(db,'solicitacoesVip',u.uid),{
+     uid:u.uid,email:u.email.trim().toLowerCase(),
+     nome:(u.displayName||'').slice(0,80),
+     whatsapp,atualizadoEm:serverTimestamp()
+   });
+   status.textContent='✅ Solicitação recebida! O responsável poderá consultar seu Gmail e WhatsApp no painel. Isso não ativa o VIP.';
+ }catch(err){
+   status.textContent='Não foi possível salvar ('+(err.code||'erro')+'). É necessário configurar as permissões privadas do Firestore.';
+ }finally{button.disabled=false;}
+});
+onAuthStateChanged(auth,()=>syncVipRequestEmail());
+
 
 
  function ageBadge(x){const value=String(x.classificacao||'');if(!['L','10','12','14','16','18'].includes(value))return null;const badge=document.createElement('span');badge.className='age-badge age-'+value;badge.textContent=value;badge.setAttribute('aria-label',value==='L'?'Classificação indicativa: Livre':'Classificação indicativa: '+value+' anos');badge.title=value==='L'?'Livre':value+' anos';return badge}
@@ -498,7 +530,18 @@ onSnapshot(collection(db,'conteudos'),snap=>{
   <img src="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/icons/whatsapp.svg"
        alt="WhatsApp"
        style="width:30px;height:30px;filter:invert(1);">
-</a></div><dialog id="installHelp" style="max-width:420px;width:90%;background:#171a24;color:white;border:1px solid #444;border-radius:18px;padding:25px"><h2 style="margin-top:0">Instalar CINEFLIX</h2><p id="installInstructions" style="line-height:1.7"></p><p style="color:#b4b8c6;font-size:13px">O aplicativo usa internet para carregar o catálogo e reproduzir vídeos.</p><button id="closeInstallHelp" class="btn">Entendi</button></dialog><dialog id="redeemCodeDialog" aria-labelledby="redeemCodeTitle" style="width:min(90vw,420px);background:#171820;color:#fff;border:1px solid #e3273d;border-radius:18px;padding:22px;box-shadow:0 18px 60px #000b"><h2 id="redeemCodeTitle" style="margin:0 0 12px">🎟 Resgatar código</h2><p style="line-height:1.5;color:#dedee6">Use um cupom autorizado para solicitar o desconto VIP. O acesso ao CINEFLIX continua exigindo login com Google.</p><form id="redeemCodeForm"><label for="redeemCodeInput" style="display:block;margin:14px 0 7px">Seu código</label><input id="redeemCodeInput" name="code" required maxlength="32" autocomplete="off" spellcheck="false" placeholder="Digite seu código" style="width:100%;box-sizing:border-box;background:#0d0d14;border:1px solid #727482;border-radius:9px;padding:12px;color:white;font-size:16px"><p id="redeemCodeStatus" role="status" aria-live="polite" style="font-size:13px;color:#ffc96b;min-height:38px">Resgate aguardando integração segura com o servidor. Nenhum desconto é aplicado nesta etapa.</p><button type="submit" class="btn" style="width:100%;background:#e7132b">Verificar código</button></form><button type="button" id="redeemCodeClose" class="btn alt" style="margin-top:10px;width:100%">Fechar</button></dialog><dialog id="vipInfoDialog" aria-labelledby="vipInfoTitle" style="width:min(92vw,440px);max-width:440px;border:1px solid #8f6c2d;border-radius:18px;background:#17151b;color:white;padding:24px;box-shadow:0 20px 80px #0009"><div style="display:flex;align-items:center;justify-content:space-between;gap:12px"><strong style="font-size:23px;color:#f6cf73" id="vipInfoTitle">★ CINEFLIX VIP</strong><button type="button" id="vipInfoClose" class="btn alt" aria-label="Fechar informações VIP">✕</button></div><p style="color:#e3d9c6">Uma experiência planejada para assistir sem anúncios.</p><p style="line-height:1.8"><strong>Preço planejado:</strong> R$ 5,99 por 30 dias.<br><strong>Plano VIP:</strong> 30 dias de acesso após a confirmação do pagamento.<br><strong>Segurança:</strong> criação obrigatória de um PIN de 8 dígitos na ativação, associado à conta Google. Esse recurso ainda será implementado com proteção no servidor.<br><strong>Renovação:</strong> manual, sem cobrança automática.<br><strong>Vencimento:</strong> o acesso VIP termina após 30 dias se não for renovado.<br><strong>Plano gratuito:</strong> continua disponível, com anúncios quando forem implementados.</p><p style="color:#ffc96b;font-weight:750">Em breve · Assinaturas e pagamentos ainda não estão disponíveis.</p><p style="color:#b4b8c6;font-size:12px;line-height:1.6">Preço previsto: R$ 5,99 por 30 dias. Nenhum pagamento é coletado nesta tela.</p><section id="vipDiscountSection" style="margin:18px 0;padding:16px;border:1px solid #665032;border-radius:14px;background:#221d1a">
+</a></div><dialog id="installHelp" style="max-width:420px;width:90%;background:#171a24;color:white;border:1px solid #444;border-radius:18px;padding:25px"><h2 style="margin-top:0">Instalar CINEFLIX</h2><p id="installInstructions" style="line-height:1.7"></p><p style="color:#b4b8c6;font-size:13px">O aplicativo usa internet para carregar o catálogo e reproduzir vídeos.</p><button id="closeInstallHelp" class="btn">Entendi</button></dialog><dialog id="redeemCodeDialog" aria-labelledby="redeemCodeTitle" style="width:min(90vw,420px);background:#171820;color:#fff;border:1px solid #e3273d;border-radius:18px;padding:22px;box-shadow:0 18px 60px #000b"><h2 id="redeemCodeTitle" style="margin:0 0 12px">🎟 Resgatar código</h2><p style="line-height:1.5;color:#dedee6">Use um cupom autorizado para solicitar o desconto VIP. O acesso ao CINEFLIX continua exigindo login com Google.</p><form id="redeemCodeForm"><label for="redeemCodeInput" style="display:block;margin:14px 0 7px">Seu código</label><input id="redeemCodeInput" name="code" required maxlength="32" autocomplete="off" spellcheck="false" placeholder="Digite seu código" style="width:100%;box-sizing:border-box;background:#0d0d14;border:1px solid #727482;border-radius:9px;padding:12px;color:white;font-size:16px"><p id="redeemCodeStatus" role="status" aria-live="polite" style="font-size:13px;color:#ffc96b;min-height:38px">Resgate aguardando integração segura com o servidor. Nenhum desconto é aplicado nesta etapa.</p><button type="submit" class="btn" style="width:100%;background:#e7132b">Verificar código</button></form><button type="button" id="redeemCodeClose" class="btn alt" style="margin-top:10px;width:100%">Fechar</button></dialog><dialog id="vipInfoDialog" aria-labelledby="vipInfoTitle" style="width:min(92vw,440px);max-width:440px;border:1px solid #8f6c2d;border-radius:18px;background:#17151b;color:white;padding:24px;box-shadow:0 20px 80px #0009"><div style="display:flex;align-items:center;justify-content:space-between;gap:12px"><strong style="font-size:23px;color:#f6cf73" id="vipInfoTitle">★ CINEFLIX VIP</strong><button type="button" id="vipInfoClose" class="btn alt" aria-label="Fechar informações VIP">✕</button></div><p style="color:#e3d9c6">Uma experiência planejada para assistir sem anúncios.</p><p style="line-height:1.8"><strong>Preço planejado:</strong> R$ 5,99 por 30 dias.<br><strong>Plano VIP:</strong> 30 dias de acesso após a confirmação do pagamento.<br><strong>Segurança:</strong> criação obrigatória de um PIN de 8 dígitos na ativação, associado à conta Google. Esse recurso ainda será implementado com proteção no servidor.<br><strong>Renovação:</strong> manual, sem cobrança automática.<br><strong>Vencimento:</strong> o acesso VIP termina após 30 dias se não for renovado.<br><strong>Plano gratuito:</strong> continua disponível, com anúncios quando forem implementados.</p><p style="color:#ffc96b;font-weight:750">Em breve · Assinaturas e pagamentos ainda não estão disponíveis.</p><p style="color:#b4b8c6;font-size:12px;line-height:1.6">Preço previsto: R$ 5,99 por 30 dias. Nenhum pagamento é coletado nesta tela.</p><section id="vipRequestSection" style="margin:18px 0;padding:16px;border:1px solid #47645c;border-radius:14px;background:#14201f">
+<strong style="font-size:18px;color:#c4ffdf">📩 Solicitar assinatura VIP</strong>
+<p style="font-size:13px;line-height:1.6;color:#d9e5df">Entre com Google e envie seu WhatsApp voluntariamente. Seu Gmail será preenchido com o da conta conectada. O pedido ficará visível apenas ao dono no painel, após a configuração das regras privadas do Firebase. Enviar não ativa o VIP nem confirma pagamento.</p>
+<form id="vipRequestForm">
+<label for="vipRequestEmail" style="display:block;margin-bottom:5px">Gmail da conta Google</label>
+<input id="vipRequestEmail" type="email" readonly style="width:100%;box-sizing:border-box;margin-bottom:12px;padding:12px;border-radius:8px;background:#101319;color:#eee;border:1px solid #66736d">
+<label for="vipRequestPhone" style="display:block;margin-bottom:5px">WhatsApp com DDD</label>
+<input id="vipRequestPhone" type="tel" inputmode="tel" maxlength="18" autocomplete="tel" placeholder="(62) 99999-9999" required style="width:100%;box-sizing:border-box;margin-bottom:12px;padding:12px;border-radius:8px;background:#101319;color:#eee;border:1px solid #66736d">
+<label style="display:flex;gap:9px;align-items:flex-start;font-size:12px;line-height:1.5;margin-bottom:12px"><input id="vipRequestConsent" type="checkbox" required style="margin-top:3px">Autorizo o envio do meu Gmail e WhatsApp ao responsável pelo CINEFLIX apenas para contato sobre minha solicitação VIP.</label>
+<button id="vipRequestSubmit" type="submit" class="btn" style="width:100%;background:#1b9564">Enviar solicitação VIP</button>
+<p id="vipRequestResult" role="status" aria-live="polite" style="font-size:13px;line-height:1.5;color:#fff0bb"></p>
+</form></section><section id="vipDiscountSection" style="margin:18px 0;padding:16px;border:1px solid #665032;border-radius:14px;background:#221d1a">
 <strong style="font-size:17px;color:#ffe2a1">🎟 Adicionar codiguin de desconto</strong>
 <p style="color:#d6c9b4;font-size:13px;line-height:1.5">Desconto de R$ 1,00 apenas para cupons ativos, validados pelo servidor.</p>
 <form id="vipDiscountForm">
