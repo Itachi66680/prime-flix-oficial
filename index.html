@@ -688,4 +688,4 @@ function stop(){if(interval!==null){clearInterval(interval);interval=null;}}
 function draw(){if(!deadline)return;const seconds=Math.max(0,Math.ceil((deadline-Date.now())/1000));count.textContent=String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(seconds%60).padStart(2,'0');if(!seconds){stop();start.disabled=false;start.textContent='Testar novamente';status.textContent='Tempo encerrado (simulação). Nenhuma cobrança foi criada.';}}
 start.addEventListener('click',()=>{stop();deadline=Date.now()+300000;start.disabled=true;start.textContent='Simulação em andamento';status.textContent='Prazo de teste iniciado. Nenhum pagamento está ativo.';draw();interval=setInterval(draw,250);});
 dialog.addEventListener('close',()=>{stop();deadline=0;count.textContent='05:00';start.disabled=false;start.textContent='Simular prazo de 5 minutos';status.textContent='Inicie para testar a contagem regressiva.';});
-})();</script></body></html>
+})();</script><script type="module" src="./cineflix-status.js"></script></body></html>
