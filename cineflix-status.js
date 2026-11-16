@@ -1,7 +1,7 @@
 
 /* CINEFLIX — etiquetas do catálogo.
    Status no Firestore, coleção conteudos:
-   statusExibicao = "lancamento" | "disponivel" | "embreve".
+   statusExibicao = "lancamento" | "disponivel" | "embreve" | "sem".
    Títulos antigos: lancamento=true => lançamento;
    demais => disponível.
 */
@@ -18,6 +18,7 @@ const normalize = value => String(value || '').normalize('NFD')
 
 function statusOf(data) {
   const raw = normalize(data.statusExibicao || data.status || '');
+  if (['sem', 'sem etiqueta', 'nenhuma'].includes(raw)) return 'sem';
   if (['embreve', 'em breve', 'em_breve'].includes(raw)) return 'embreve';
   if (['lancamento', 'novo lancamento', 'novo_lancamento'].includes(raw)) return 'lancamento';
   if (['disponivel', 'ja disponivel', 'já disponível'].includes(raw)) return 'disponivel';
@@ -71,6 +72,18 @@ function decorateCard(card) {
   if (!imageBox) return;
 
   let label = imageBox.querySelector('.cineflix-status-label');
+  const ribbon = imageBox.querySelector('.cine-ribbon');
+
+  if (status === 'sem') {
+    if (label) label.remove();
+    if (ribbon && ribbon.style.display !== 'none') ribbon.style.display = 'none';
+    const watch = card.querySelector('.card-body .actions button');
+    if (watch && watch.textContent.trim() === 'EM BREVE') {
+      watch.disabled = false;
+      watch.textContent = 'Assistir';
+    }
+    return;
+  }
 
   if (!label) {
     label = document.createElement('span');
@@ -88,8 +101,6 @@ function decorateCard(card) {
 
   if (label.style.color !== format.foreground)
     label.style.color = format.foreground;
-
-  const ribbon = imageBox.querySelector('.cine-ribbon');
 
   if (ribbon && ribbon.style.display !== 'none')
     ribbon.style.display = 'none';
