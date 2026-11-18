@@ -105,6 +105,33 @@ a[aria-label="Seguir canal CINEFLIX no WhatsApp"]{bottom:calc(80px + env(safe-ar
 #catalogApp #searchArea .search::placeholder{color:#555}
 #catalogApp a[aria-label="Seguir canal CINEFLIX no WhatsApp"]{bottom:calc(92px + env(safe-area-inset-bottom,0px))!important}
 }
+</style>
+<style id="cine-search-premium-layout">
+.cine-premium-page{display:none}
+.cine-premium-hero{background:linear-gradient(150deg,#5b0a17,#171218 60%,#0f1014);border:1px solid #4b1c25;border-radius:17px;padding:29px 20px;margin:6px 0 26px}
+.cine-premium-hero h1{font-size:clamp(26px,6vw,37px);line-height:1.17;margin:20px 0}
+.cine-premium-eyebrow{color:#ff6174;font-weight:900;letter-spacing:.5px}
+.cine-premium-card{padding:23px 21px;background:#222226;border:1px solid #444149;border-radius:16px;margin:15px 0}
+.cine-premium-card h2{color:#ff8290;font-size:29px}
+.cine-premium-card li{line-height:1.7;margin:7px 0}
+.cine-premium-card ul{padding-left:20px}
+.cine-premium-card .btn{width:100%;border-radius:30px;margin-top:10px}
+.cine-premium-footnote{font-size:12px;color:#b5b5bd}
+@media(max-width:740px){
+#catalogApp .top #vipInfoButton{display:none!important}
+#catalogApp .cine-mobile-discover:not(.hidden){display:block!important}
+#catalogApp .cine-mobile-discover{margin-bottom:21px}
+#catalogApp .cine-mobile-discover .cine-quick-search{margin-bottom:19px}
+#catalogApp #searchArea:not(.hidden){position:absolute!important;left:-10000px!important;width:1px!important;height:1px!important;overflow:hidden!important;padding:0!important;margin:0!important}
+#catalogApp .cine-premium-page:not(.hidden){display:block!important}
+#catalogApp.cine-premium-mode #hero,
+#catalogApp.cine-premium-mode #searchArea,
+#catalogApp.cine-premium-mode .genre-filter,
+#catalogApp.cine-premium-mode #listTitle,
+#catalogApp.cine-premium-mode #status,
+#catalogApp.cine-premium-mode #cards{display:none!important}
+#catalogApp.cine-premium-mode .cine-mobile-discover{display:none!important}
+}
 </style></head><body class="opening"><div id="welcomeScreen" style="
 position:fixed;
 inset:0;
@@ -143,14 +170,23 @@ Entrar com Google
 <button type="button" class="cine-bottom-item" data-cine-go="favoritos" aria-label="Sua Biblioteca"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M3 4h3v16H3zM10 5h3v15h-3zM18 4l3 1v15l-3-1z"/></svg><span>Sua Biblioteca</span></button>
 <button type="button" class="cine-bottom-item" data-cine-go="premium" aria-label="Premium"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="m2 7 5 4 5-7 5 7 5-4-2 13H4z"/></svg><span>Premium</span></button>
 <button type="button" class="cine-bottom-item" data-cine-go="criar" aria-label="Criar lista"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v16M4 12h16"/></svg><span>Criar</span></button>
-</nav><main><section class="cine-mobile-discover" id="cineQuickDiscover" aria-label="Busca e categorias">
+</nav><main><section class="cine-mobile-discover hidden" id="cineQuickDiscover" aria-label="Busca e categorias">
 <label class="cine-quick-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m16 16 5 5"/></svg><input id="cineQuickQuery" type="search" placeholder="O que você quer assistir?" aria-label="Buscar filmes, séries e animes"></label>
 <div class="cine-category-tiles">
 <button type="button" class="cine-tile cine-movies" data-cine-go="filmes"><span>▣ &nbsp;Filmes</span><span aria-hidden="true" class="cine-tile-symbol">🎬</span></button>
 <button type="button" class="cine-tile cine-series" data-cine-go="series"><span>▤ &nbsp;Séries</span><span aria-hidden="true" class="cine-tile-symbol">📺</span></button>
 <button type="button" class="cine-tile cine-anime" data-cine-go="animes"><span>✦ &nbsp;Animes</span><span aria-hidden="true" class="cine-tile-symbol">⚡</span></button>
 <button type="button" class="cine-tile cine-soon" data-cine-go="embreve"><span>◷ &nbsp;Em breve</span><span aria-hidden="true" class="cine-tile-symbol">🍿</span></button>
-</div></section><section id="hero" class="hero"><div class="hero-body"><div class="eyebrow">EM DESTAQUE</div><h1 id="heroTitle">Bem-vindo ao CINEFLIX</h1><p id="heroText">Filmes, séries e animes reunidos em um só lugar. Explore o catálogo e escolha o que assistir.</p><div class="actions"><button id="heroWatch" class="btn hidden">▶ Assistir</button><button id="heroExplore" class="btn ghost">Explorar catálogo</button></div></div></section><div id="searchArea" class="hidden"><h2>Pesquisar</h2><input id="search" class="search" placeholder="Qual filme, série ou anime você procura?" type="search" aria-label="Pesquisar títulos"></div><div class="genre-filter"><label for="genreFilter">Gêneros</label><select id="genreFilter"><option value="">Todos os gêneros</option></select></div><h2 id="listTitle">Catálogo</h2><p id="status" class="intro" role="status">Carregando catálogo…</p><div id="cards" class="grid"></div><section id="viewer" class="viewer hidden"><h2 id="viewerTitle"></h2><p id="viewerDesc"></p><div id="seasonArea" class="hidden"><h3>Temporadas e episódios</h3><div class="seasons" id="seasons"></div><div id="episodes"></div></div><div class="pause-stage" id="pauseStage"><video id="player" playsinline controls preload="metadata"></video><div class="pause-screen hidden" id="pauseScreen" aria-label="Informações do vídeo pausado"><img class="pause-cover" id="pauseCover" alt=""><div class="pause-content"><div class="pause-brand" id="pauseBrand">CINEFLIX</div><h3 class="pause-title" id="pauseTitle"></h3><p class="pause-meta" id="pauseMeta"></p><p class="pause-description" id="pauseDescription"></p><div class="pause-progress" aria-hidden="true"><span id="pauseProgressFill"></span></div><p class="pause-progress-text" id="pauseProgressText"></p><div class="pause-actions"><button type="button" id="pauseResume" class="pause-resume">▶ Continuar assistindo</button><button type="button" id="pauseEpisodes">▤ Episódios e mais</button><button type="button" id="pauseSimilar">▦ Títulos semelhantes</button></div></div></div></div></section><p class="footer">CINEFLIX • Reprodução de conteúdos disponibilizados com autorização. <a href="./admin.html">Administração</a></p></main></div>
+</div></section><section id="hero" class="hero"><div class="hero-body"><div class="eyebrow">EM DESTAQUE</div><h1 id="heroTitle">Bem-vindo ao CINEFLIX</h1><p id="heroText">Filmes, séries e animes reunidos em um só lugar. Explore o catálogo e escolha o que assistir.</p><div class="actions"><button id="heroWatch" class="btn hidden">▶ Assistir</button><button id="heroExplore" class="btn ghost">Explorar catálogo</button></div></div></section><section id="cinePremiumPage" class="cine-premium-page hidden" aria-label="CINEFLIX Premium">
+ <div class="cine-premium-hero"><span class="cine-premium-eyebrow">♛ CINEFLIX VIP</span>
+ <h1>Assista mais com o CINEFLIX Premium</h1><p>Descubra os benefícios e consulte sua assinatura VIP.</p>
+ <button type="button" class="btn" id="cinePremiumDetails">★ Ver minha assinatura</button></div>
+ <h2>Seu plano VIP</h2><div class="cine-premium-card"><span class="cine-premium-eyebrow">★ Premium</span><h2>Individual</h2>
+ <p>Assinatura vinculada à sua conta Google, com renovação manual e acesso controlado.</p>
+ <ul><li>Assista aos conteúdos disponíveis no seu plano</li><li>Consulte seu acesso e vencimento</li><li>Renove manualmente, sem cobrança automática</li></ul>
+ <button type="button" id="cinePremiumSubscribe" class="btn">Consultar planos e assinatura</button>
+ <p class="cine-premium-footnote">Valores e pagamentos são informados na área VIP oficial do CINEFLIX.</p></div>
+ </section><div id="searchArea" class="hidden"><h2>Pesquisar</h2><input id="search" class="search" placeholder="Qual filme, série ou anime você procura?" type="search" aria-label="Pesquisar títulos"></div><div class="genre-filter"><label for="genreFilter">Gêneros</label><select id="genreFilter"><option value="">Todos os gêneros</option></select></div><h2 id="listTitle">Catálogo</h2><p id="status" class="intro" role="status">Carregando catálogo…</p><div id="cards" class="grid"></div><section id="viewer" class="viewer hidden"><h2 id="viewerTitle"></h2><p id="viewerDesc"></p><div id="seasonArea" class="hidden"><h3>Temporadas e episódios</h3><div class="seasons" id="seasons"></div><div id="episodes"></div></div><div class="pause-stage" id="pauseStage"><video id="player" playsinline controls preload="metadata"></video><div class="pause-screen hidden" id="pauseScreen" aria-label="Informações do vídeo pausado"><img class="pause-cover" id="pauseCover" alt=""><div class="pause-content"><div class="pause-brand" id="pauseBrand">CINEFLIX</div><h3 class="pause-title" id="pauseTitle"></h3><p class="pause-meta" id="pauseMeta"></p><p class="pause-description" id="pauseDescription"></p><div class="pause-progress" aria-hidden="true"><span id="pauseProgressFill"></span></div><p class="pause-progress-text" id="pauseProgressText"></p><div class="pause-actions"><button type="button" id="pauseResume" class="pause-resume">▶ Continuar assistindo</button><button type="button" id="pauseEpisodes">▤ Episódios e mais</button><button type="button" id="pauseSimilar">▦ Títulos semelhantes</button></div></div></div></div></section><p class="footer">CINEFLIX • Reprodução de conteúdos disponibilizados com autorização. <a href="./admin.html">Administração</a></p></main></div>
 <script>
 // A abertura e a restauração da sessão acontecem em paralelo.
 window.CineflixIntro=(()=>{
@@ -759,22 +795,24 @@ dialog.addEventListener('close',()=>{stop();deadline=0;count.textContent='05:00'
 const $=id=>document.getElementById(id);
 const originalNav=()=>document.querySelector('#catalogApp .layout>nav:not(.cine-bottom-nav)');
 function mark(tab){document.querySelectorAll('.cine-bottom-item').forEach(b=>b.classList.toggle('selected',b.dataset.cineGo===tab))}
-function nativeTab(tab){const btn=originalNav()?.querySelector('button[data-tab="'+tab+'"]');if(!btn)return;btn.click();mark(tab==='favoritos'?'favoritos':tab);$('cineQuickDiscover')?.classList.toggle('hidden',tab!=='inicio');}
+function nativeTab(tab){$('catalogApp')?.classList.remove('cine-premium-mode');$('cinePremiumPage')?.classList.add('hidden');const btn=originalNav()?.querySelector('button[data-tab="'+tab+'"]');if(!btn)return;btn.click();mark(tab);$('cineQuickDiscover')?.classList.toggle('hidden',tab!=='pesquisar');}
 function go(tab){
- if(tab==='premium'){$('vipInfoButton')?.click();return}
+ if(tab==='premium'){nativeTab('inicio');$('cineQuickDiscover')?.classList.add('hidden');$('catalogApp')?.classList.add('cine-premium-mode');$('cinePremiumPage')?.classList.remove('hidden');mark('premium');window.scrollTo({top:0,behavior:'smooth'});return}
  if(tab==='criar'){renderLists();const d=$('cineCreateDialog');if(d?.showModal)d.showModal();else d?.setAttribute('open','');return}
  if(tab==='embreve'){nativeTab('inicio');const upcoming=document.querySelector('#cards .catalog-section');const candidates=[...document.querySelectorAll('#cards .card')].filter(x=>/em breve/i.test(x.textContent||''));if(candidates.length){candidates[0].scrollIntoView({behavior:'smooth'});}else{alert('A seção Em breve ficará disponível quando títulos futuros forem classificados no catálogo.');}return}
- nativeTab(tab);if(tab==='pesquisar')$('search')?.focus();
+ nativeTab(tab);if(tab==='pesquisar'){const q=$('cineQuickQuery');if(q){q.value=$('search')?.value||'';}}
 }
 document.querySelectorAll('[data-cine-go]').forEach(btn=>btn.addEventListener('click',()=>go(btn.dataset.cineGo)));
-$('cineQuickQuery')?.addEventListener('focus',()=>{nativeTab('pesquisar');$('search')?.focus()});
+$('cineQuickQuery')?.addEventListener('input',e=>{const input=$('search');if(input){input.value=e.target.value;input.dispatchEvent(new Event('input',{bubbles:true}))}});
 $('cineQuickQuery')?.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();go('pesquisar')}});
+$('cinePremiumDetails')?.addEventListener('click',()=>$('vipInfoButton')?.click());
+$('cinePremiumSubscribe')?.addEventListener('click',()=>$('vipInfoButton')?.click());
 const storeKey='cineflix-minhas-listas-v1';
 function read(){try{const v=JSON.parse(localStorage.getItem(storeKey)||'[]');return Array.isArray(v)?v:[]}catch{return []}}
 function write(x){try{localStorage.setItem(storeKey,JSON.stringify(x))}catch{}}
 function renderLists(){let host=$('cineCreatedLists');if(!host)return;host.replaceChildren();let h=document.createElement('h3');h.textContent='Minhas listas';host.append(h);let arr=read();if(!arr.length){let p=document.createElement('p');p.textContent='Nenhuma lista criada ainda.';p.style.color='#b9b9c1';host.append(p)}arr.forEach(item=>{const box=document.createElement('div');box.className='cine-list-card';let strong=document.createElement('strong');strong.textContent=item.name;let p=document.createElement('p');p.textContent='Lista pessoal criada';p.style.margin='5px 0';p.style.color='#aaa';let remove=document.createElement('button');remove.type='button';remove.className='btn alt';remove.textContent='Excluir';remove.onclick=()=>{write(read().filter(x=>x.id!==item.id));renderLists()};box.append(strong,p,remove);host.append(box)})}
 $('cineCreateForm')?.addEventListener('submit',e=>{e.preventDefault();let input=$('cineListName');let name=input.value.trim();if(!name)return;let all=read();all.push({id:String(Date.now())+Math.random().toString(36).slice(2),name});write(all);input.value='';renderLists()});
 $('cineCloseCreate')?.addEventListener('click',()=>$('cineCreateDialog')?.close?.());
-document.querySelectorAll('#catalogApp .layout>nav:not(.cine-bottom-nav) button[data-tab]').forEach(b=>b.addEventListener('click',()=>{mark(b.dataset.tab);$('cineQuickDiscover')?.classList.toggle('hidden',b.dataset.tab!=='inicio')}));
+document.querySelectorAll('#catalogApp .layout>nav:not(.cine-bottom-nav) button[data-tab]').forEach(b=>b.addEventListener('click',()=>{$('catalogApp')?.classList.remove('cine-premium-mode');$('cinePremiumPage')?.classList.add('hidden');mark(b.dataset.tab);$('cineQuickDiscover')?.classList.toggle('hidden',b.dataset.tab!=='pesquisar')}));
 })();
 </script></body></html>
