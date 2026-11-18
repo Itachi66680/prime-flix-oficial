@@ -139,6 +139,68 @@ a[aria-label="Seguir canal CINEFLIX no WhatsApp"]{bottom:calc(80px + env(safe-ar
 #catalogApp.cine-home-mode #status {display:none!important}
 #catalogApp .hero-rotation {display:none!important}
 #catalogApp.cine-home-mode #cards {margin-top:15px}
+</style><style id="cine-classic-full-cover">
+/* Restore prominent title and show uploaded cover artwork without cropping. */
+@media(max-width:740px){
+#catalogApp .top{padding-bottom:9px!important}
+#catalogApp main{padding-top:4px!important}
+#catalogApp .hero{
+  height:min(76svh,610px)!important;
+  min-height:445px!important;
+  max-height:610px!important;
+  margin-top:0!important;
+  margin-bottom:4px!important;
+  background:#111116!important;
+  border-radius:14px!important;
+  align-items:stretch!important;
+}
+#catalogApp .hero>img{
+  object-fit:contain!important;
+  object-position:center center!important;
+  width:100%!important;height:100%!important;
+  opacity:1!important;
+}
+#catalogApp .hero:after{
+  background:linear-gradient(180deg,#050508ad 0%,#05050822 26%,transparent 51%,#060608cc 84%,#060608f5 100%)!important
+}
+#catalogApp .hero-body{
+  position:relative!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  justify-content:flex-start!important;
+  width:100%!important;
+  padding:18px 16px 57px!important;
+  min-height:100%!important;
+  pointer-events:none;
+}
+#catalogApp .hero-body .eyebrow{font-size:10px!important}
+#catalogApp .hero-body h1{
+  font-size:clamp(24px,6vw,33px)!important;
+  line-height:1.15!important;
+  margin:9px 0 7px!important;
+  max-width:100%!important;
+  overflow-wrap:anywhere;
+  text-shadow:0 2px 12px #000,0 0 20px #000!important;
+}
+#catalogApp .hero-body .hero-age{margin:4px 0!important}
+#catalogApp .hero-body .actions{
+  margin-top:auto!important;
+  display:flex!important;
+  gap:9px!important;
+  pointer-events:auto;
+}
+#catalogApp .hero-body .actions .btn{font-size:13px!important}
+#catalogApp .hero-dots{
+  pointer-events:auto;
+  width:calc(100% - 40px)!important;
+  justify-content:center!important;
+  max-width:calc(100% - 40px)!important;
+  bottom:15px!important;
+}
+#catalogApp.cine-home-mode #cards{margin-top:5px!important}
+#catalogApp .imagebox img{object-fit:contain!important;object-position:center center!important}
+}
 </style></head><body class="opening"><div id="welcomeScreen" style="
 position:fixed;
 inset:0;
