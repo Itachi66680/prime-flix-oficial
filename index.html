@@ -763,11 +763,11 @@ function nativeTab(tab){const btn=originalNav()?.querySelector('button[data-tab=
 function go(tab){
  if(tab==='premium'){$('vipInfoButton')?.click();return}
  if(tab==='criar'){renderLists();const d=$('cineCreateDialog');if(d?.showModal)d.showModal();else d?.setAttribute('open','');return}
- if(tab==='embreve'){nativeTab('inicio');const el=document.querySelector('#cards .catalog-section');if(el)el.scrollIntoView({behavior:'smooth'});return}
+ if(tab==='embreve'){nativeTab('inicio');const upcoming=document.querySelector('#cards .catalog-section');const candidates=[...document.querySelectorAll('#cards .card')].filter(x=>/em breve/i.test(x.textContent||''));if(candidates.length){candidates[0].scrollIntoView({behavior:'smooth'});}else{alert('A seção Em breve ficará disponível quando títulos futuros forem classificados no catálogo.');}return}
  nativeTab(tab);if(tab==='pesquisar')$('search')?.focus();
 }
 document.querySelectorAll('[data-cine-go]').forEach(btn=>btn.addEventListener('click',()=>go(btn.dataset.cineGo)));
-$('cineQuickQuery')?.addEventListener('input',e=>{const value=e.target.value;if(!value.trim())return;nativeTab('pesquisar');const input=$('search');if(input){input.value=value;input.dispatchEvent(new Event('input',{bubbles:true}))}});
+$('cineQuickQuery')?.addEventListener('focus',()=>{nativeTab('pesquisar');$('search')?.focus()});
 $('cineQuickQuery')?.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();go('pesquisar')}});
 const storeKey='cineflix-minhas-listas-v1';
 function read(){try{const v=JSON.parse(localStorage.getItem(storeKey)||'[]');return Array.isArray(v)?v:[]}catch{return []}}
