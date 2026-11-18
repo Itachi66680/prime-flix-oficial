@@ -132,6 +132,13 @@ a[aria-label="Seguir canal CINEFLIX no WhatsApp"]{bottom:calc(80px + env(safe-ar
 #catalogApp.cine-premium-mode #cards{display:none!important}
 #catalogApp.cine-premium-mode .cine-mobile-discover{display:none!important}
 }
+</style><style id="cine-home-simplification">
+/* Keep filtering and heading for other sections, remove visual clutter from Inicio. */
+#catalogApp.cine-home-mode .genre-filter,
+#catalogApp.cine-home-mode #listTitle,
+#catalogApp.cine-home-mode #status {display:none!important}
+#catalogApp .hero-rotation {display:none!important}
+#catalogApp.cine-home-mode #cards {margin-top:15px}
 </style></head><body class="opening"><div id="welcomeScreen" style="
 position:fixed;
 inset:0;
@@ -519,6 +526,7 @@ function makeCard(x,number=null){
  body.append(name);const age=ageBadge(x);if(age)body.append(age);body.append(meta,actions);card.append(pic,body);return card;
 }
 function paint(){
+ $('catalogApp')?.classList.toggle('cine-home-mode',tab==='inicio');
  const queryText=$('search').value.trim().toLowerCase();
  $('searchArea').classList.toggle('hidden',tab!=='pesquisar');$('hero').classList.toggle('hidden',tab!=='inicio');
  const titles={inicio:'Explore o catálogo',pesquisar:'Resultados da pesquisa',filmes:'Filmes',series:'Séries',animes:'Animes',favoritos:'Meus favoritos'};
