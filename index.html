@@ -199,6 +199,7 @@ a[aria-label="Seguir canal CINEFLIX no WhatsApp"]{bottom:calc(80px + env(safe-ar
   bottom:15px!important;
 }
 #catalogApp.cine-home-mode #cards{margin-top:5px!important}
+#catalogApp .imagebox.wide-art::before{content:"";position:absolute;inset:-12px;background:var(--poster-background) center/cover;filter:blur(12px) brightness(.68);pointer-events:none}
 #catalogApp .imagebox img{object-fit:contain!important;object-position:center center!important}
 }
 </style></head><body class="opening"><div id="welcomeScreen" style="
@@ -573,8 +574,39 @@ function makeCard(x,number=null){
  const pic=document.createElement('div');pic.className='imagebox';pic.tabIndex=0;pic.setAttribute('role','button');
  pic.setAttribute('aria-label','Ver detalhes de '+(x.titulo||'título'));pic.onclick=()=>openItem(x);
  pic.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openItem(x)}};
- pic.textContent='🎬';const src=https(x.capa);
- if(src){const img=document.createElement('img');img.src=src;img.alt='Capa de '+(x.titulo||'');img.loading='lazy';pic.append(img)}
+ pic.textContent='🎬';
+ const cover=https(x.capa);
+ const cyberpunkPoster=/^cyberpunk\s*:?\s*(mercen[aá]rios|edgerunners)\b/i.test(x.titulo||'')
+   ? 'https://image.tmdb.org/t/p/w500/nWvAY8yHE873adMws83XqBPf7W2.jpg' : '';
+ const poster=https(x.poster)||cyberpunkPoster;
+ if(cover||poster){
+   const img=document.createElement('img');
+   img.alt='Capa de '+(x.titulo||'');
+   img.loading='lazy';
+   let triedPoster=false;
+   const showPoster=()=>{
+     if(!poster||triedPoster||poster===cover)return false;
+     triedPoster=true;
+     img.src=poster;
+     return true;
+   };
+   img.onload=()=>{
+     if(pic.firstChild.nodeType===Node.TEXT_NODE)pic.firstChild.textContent='';
+     if(img.naturalWidth>img.naturalHeight){
+       if(showPoster())return;
+       pic.style.setProperty('--poster-background','url('+JSON.stringify(img.src)+')');
+       pic.classList.add('wide-art');
+     }
+   };
+   img.onerror=()=>{
+     if(showPoster())return;
+     if(cover&&img.src!==cover){img.src=cover;return}
+     img.remove();
+     if(!pic.textContent.includes('🎬'))pic.prepend('🎬');
+   };
+   pic.append(img);
+   img.src=cover||poster;
+ }
  const logo=document.createElement('span');logo.className='cine-mark';logo.textContent='C';logo.setAttribute('aria-label','CINEFLIX');pic.append(logo);
  if(number!==null){const rank=document.createElement('span');rank.className='cine-top';rank.textContent='TOP '+number;pic.append(rank)}
  const p=progressOf(x);
