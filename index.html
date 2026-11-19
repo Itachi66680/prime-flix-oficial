@@ -199,7 +199,8 @@ a[aria-label="Seguir canal CINEFLIX no WhatsApp"]{bottom:calc(80px + env(safe-ar
   bottom:15px!important;
 }
 #catalogApp.cine-home-mode #cards{margin-top:5px!important}
-#catalogApp .imagebox.wide-art::before{content:"";position:absolute;inset:-12px;background:var(--poster-background) center/cover;filter:blur(12px) brightness(.68);pointer-events:none}
+#catalogApp .imagebox.wide-art{background:linear-gradient(155deg,#342735,#12121a 65%);isolation:isolate}
+#catalogApp .imagebox:has(.cineflix-status-label) .cine-mark{display:none}
 #catalogApp .imagebox img{object-fit:contain!important;object-position:center center!important}
 }
 </style></head><body class="opening"><div id="welcomeScreen" style="
@@ -569,44 +570,75 @@ function openItem(x){
 }
 $('detailFav').onclick=()=>{if(!chosen)return;favs.has(chosen.id)?favs.delete(chosen.id):favs.add(chosen.id);localStorage.setItem(favKey,JSON.stringify([...favs]));updateDetailFav();paint()};
 function showSeasons(x,eps){let seasons=[...new Set(eps.map(e=>Number(e.temporada)))].sort((a,b)=>a-b);if(!seasons.includes(season))season=seasons[0];$('seasons').replaceChildren();for(let s of seasons){let b=document.createElement('button');b.className='season'+(s===season?' on':'');b.textContent='Temporada '+s;b.onclick=()=>{season=s;showSeasons(x,eps)};$('seasons').append(b)}$('episodes').replaceChildren();for(let ep of eps.filter(e=>Number(e.temporada)===season)){let row=document.createElement('div');row.className='episode';let text=document.createElement('span');text.textContent='Episódio '+ep.numero+(ep.titulo?' — '+ep.titulo:'');let b=document.createElement('button');b.className='btn';b.textContent='▶ Assistir';b.disabled=!https(ep.video);b.onclick=()=>showVideo(ep.video,(x.titulo||'')+' — T'+season+' E'+ep.numero);row.append(text,b);$('episodes').append(row)}}
+const featuredPosters = new Map([
+ ['minha culpa', 'https://streamingfilter.com/img/w500/w46Vw536HwNnEzOa7J24YH9DPRS.webp'],
+ ['moana 2026', 'https://lumiere-a.akamaihd.net/v1/images/p_disneymovies_moana_live_action_b031919e.jpeg'],
+ ['cyberpunk mercenarios', 'https://image.tmdb.org/t/p/w500/nWvAY8yHE873adMws83XqBPf7W2.jpg'],
+ ['cyberpunk edgerunners', 'https://image.tmdb.org/t/p/w500/nWvAY8yHE873adMws83XqBPf7W2.jpg']
+]);
+const posterLookups = new Map();
+function posterKey(title){
+ return String(title||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
+}
+function findCatalogPoster(title){
+ const year=String(title).match(/\b(?:19|20)\d{2}\b/)?.[0];
+ const name=String(title).replace(/\s*\(?(?:19|20)\d{2}\)?\s*$/,'').trim();
+ const key=posterKey(title);
+ if(!posterLookups.has(key)){
+   const query=new URLSearchParams({action:'query',generator:'search',gsrsearch:name+' '+(year||'')+' filme OR série OR anime',gsrlimit:'4',prop:'pageimages|extracts',piprop:'thumbnail',pithumbsize:'500',exintro:'1',explaintext:'1',format:'json',origin:'*'});
+   const lookup=fetch('https://pt.wikipedia.org/w/api.php?'+query).then(r=>r.json()).then(data=>{
+     const page=Object.values(data.query?.pages||{}).find(p=>
+       posterKey(p.title.replace(/\s*\([^)]*\)$/,''))===posterKey(name) &&
+       (!year||(p.extract||'').slice(0,800).includes(year)) &&
+       /filme|série|anime/i.test((p.extract||'').slice(0,300)) &&
+       /poster|p[oôó]ster|cartaz|capa/i.test(decodeURI(p.thumbnail?.source||'')) &&
+       p.thumbnail?.height>p.thumbnail?.width
+     );
+     return page?.thumbnail?.source||'';
+   }).catch(()=>'');
+   posterLookups.set(key,lookup);
+ }
+ return posterLookups.get(key);
+}
 function makeCard(x,number=null){
  const card=document.createElement('article');card.className='card';
  const pic=document.createElement('div');pic.className='imagebox';pic.tabIndex=0;pic.setAttribute('role','button');
  pic.setAttribute('aria-label','Ver detalhes de '+(x.titulo||'título'));pic.onclick=()=>openItem(x);
  pic.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openItem(x)}};
- pic.textContent='🎬';
+ const title=x.titulo||'';
+ const key=posterKey(title);
+ const known=featuredPosters.get(key)||featuredPosters.get(key.replace(/ 2023$/,''));
  const cover=https(x.capa);
- const cyberpunkPoster=/^cyberpunk\s*:?\s*(mercen[aá]rios|edgerunners)\b/i.test(x.titulo||'')
-   ? 'https://image.tmdb.org/t/p/w500/nWvAY8yHE873adMws83XqBPf7W2.jpg' : '';
- const poster=https(x.poster)||cyberpunkPoster;
- if(cover||poster){
-   const img=document.createElement('img');
-   img.alt='Capa de '+(x.titulo||'');
-   img.loading='lazy';
-   let triedPoster=false;
-   const showPoster=()=>{
-     if(!poster||triedPoster||poster===cover)return false;
-     triedPoster=true;
-     img.src=poster;
-     return true;
-   };
-   img.onload=()=>{
-     if(pic.firstChild.nodeType===Node.TEXT_NODE)pic.firstChild.textContent='';
-     if(img.naturalWidth>img.naturalHeight){
-       if(showPoster())return;
-       pic.style.setProperty('--poster-background','url('+JSON.stringify(img.src)+')');
-       pic.classList.add('wide-art');
-     }
-   };
-   img.onerror=()=>{
-     if(showPoster())return;
-     if(cover&&img.src!==cover){img.src=cover;return}
-     img.remove();
-     if(!pic.textContent.includes('🎬'))pic.prepend('🎬');
-   };
-   pic.append(img);
-   img.src=cover||poster;
- }
+ const sources=[...new Set([https(x.poster),known,cover].filter(Boolean))];
+ const img=document.createElement('img');
+ img.alt='Capa de '+title;
+ img.loading='lazy';
+ let searched=false;
+ let landscape='';
+ const next=async()=>{
+   const source=sources.shift();
+   if(source){img.src=source;return}
+   if(!searched){
+     searched=true;
+     const found=await findCatalogPoster(title);
+     if(found&&found!==landscape){img.src=found;return}
+   }
+   if(landscape){
+     pic.classList.add('wide-art');
+     img.onload=null;
+     img.onerror=()=>img.remove();
+     img.src=landscape;
+   }else{img.remove()}
+ };
+ img.onload=()=>{
+   if(img.naturalWidth>img.naturalHeight){
+     landscape=landscape||img.src;
+     next();
+   }
+ };
+ img.onerror=next;
+ pic.append(img);
+ next();
  const logo=document.createElement('span');logo.className='cine-mark';logo.textContent='C';logo.setAttribute('aria-label','CINEFLIX');pic.append(logo);
  if(number!==null){const rank=document.createElement('span');rank.className='cine-top';rank.textContent='TOP '+number;pic.append(rank)}
  const p=progressOf(x);
