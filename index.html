@@ -37,7 +37,7 @@ nav{height:calc(64px + env(safe-area-inset-bottom,0px));padding:5px 4px calc(5px
 nav button{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:4px;padding:5px 1px;font-size:10px;line-height:1.2;border-radius:9px}
 nav button span{white-space:nowrap}nav button.on{background:#34161c}
 .nav-icon{width:22px;height:22px}main{padding-bottom:calc(86px + env(safe-area-inset-bottom,0px))}
-a[aria-label="Seguir canal CINEFLIX no WhatsApp"]{bottom:calc(80px + env(safe-area-inset-bottom,0px))!important}
+.cine-social-links{bottom:calc(80px + env(safe-area-inset-bottom,0px))!important}
 }
 /* TOP 1–10 em uma só fileira horizontal, sem quebrar em novas linhas. */
 .catalog-top-scroll{display:flex!important;flex-wrap:nowrap!important;gap:10px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scroll-padding:4px;-webkit-overflow-scrolling:touch;padding:4px 2px 12px;scrollbar-width:thin}
@@ -103,7 +103,7 @@ a[aria-label="Seguir canal CINEFLIX no WhatsApp"]{bottom:calc(80px + env(safe-ar
 #catalogApp .catalog-section .catalog-top-scroll>.card{flex-basis:clamp(120px,34vw,165px)}
 #catalogApp #searchArea .search{background:#f3f3f3;color:#111}
 #catalogApp #searchArea .search::placeholder{color:#555}
-#catalogApp a[aria-label="Seguir canal CINEFLIX no WhatsApp"]{bottom:calc(92px + env(safe-area-inset-bottom,0px))!important}
+#catalogApp .cine-social-links{bottom:calc(92px + env(safe-area-inset-bottom,0px))!important}
 }
 </style>
 <style id="cine-search-premium-layout">
@@ -223,6 +223,12 @@ a[aria-label="Seguir canal CINEFLIX no WhatsApp"]{bottom:calc(80px + env(safe-ar
 #cfDrawer :is(.cf-links,#cfGenres) button{display:block;text-align:left;background:none;color:inherit;border:0;padding:12px 0;width:100%;font:inherit;cursor:pointer}
 #cfDrawer .cf-links button{font-size:23px;font-weight:bold}
 #cfDrawer button:focus-visible,.cf-icon:focus-visible{outline:2px solid white}
+</style><style>
+.cine-social-links{position:fixed;right:18px;bottom:90px;z-index:9999;display:flex;flex-direction:column;gap:10px}
+.cine-social-links a{width:56px;height:56px;display:grid;place-items:center;border-radius:50%;box-shadow:0 4px 12px #0006}
+.cine-social-instagram{background:radial-gradient(circle at 26% 100%,#ffda79,#f77737 28%,#d62976 53%,#962fbf 79%,#4f5bd5)}
+.cine-social-whatsapp{background:#25d366}
+.cine-social-links a:focus-visible{outline:3px solid white;outline-offset:2px}
 </style></head><body class="opening"><div id="welcomeScreen" style="
 position:fixed;
 inset:0;
@@ -813,19 +819,20 @@ onSnapshot(collection(db,'conteudos'),snap=>{
   }
  }
 },e=>{$('status').textContent='Não foi possível carregar o catálogo: '+e.code});
- </script><a href="https://whatsapp.com/channel/0029Vb9M6pZHLHQcR6jWXo0m"
+ </script><div class="cine-social-links">
+<a class="cine-social-instagram" href="https://www.instagram.com/clneflix/" target="_blank" rel="noopener noreferrer" aria-label="Abrir Instagram oficial da CINEFLIX">
+  <svg aria-hidden="true" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.9"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.3" cy="6.8" r="1.15" fill="white" stroke="none"/></svg>
+</a>
+<a href="https://whatsapp.com/channel/0029Vb9M6pZHLHQcR6jWXo0m"
    target="_blank"
    rel="noopener noreferrer"
    aria-label="Seguir canal CINEFLIX no WhatsApp"
-   style="position:fixed;bottom:90px;right:18px;
-   width:56px;height:56px;background:#25D366;
-   border-radius:50%;display:flex;align-items:center;
-   justify-content:center;z-index:9999;
-   box-shadow:0 4px 12px #0006;">
+   class="cine-social-whatsapp">
   <img src="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/icons/whatsapp.svg"
        alt="WhatsApp"
        style="width:30px;height:30px;filter:invert(1);">
-</a></div><dialog id="installHelp" style="max-width:420px;width:90%;background:#171a24;color:white;border:1px solid #444;border-radius:18px;padding:25px"><h2 style="margin-top:0">Instalar CINEFLIX</h2><p id="installInstructions" style="line-height:1.7"></p><p style="color:#b4b8c6;font-size:13px">O aplicativo usa internet para carregar o catálogo e reproduzir vídeos.</p><button id="closeInstallHelp" class="btn">Entendi</button></dialog><dialog id="redeemCodeDialog" aria-labelledby="redeemCodeTitle" style="width:min(90vw,420px);background:#171820;color:#fff;border:1px solid #e3273d;border-radius:18px;padding:22px;box-shadow:0 18px 60px #000b"><h2 id="redeemCodeTitle" style="margin:0 0 12px">🎟 Resgatar código</h2><p style="line-height:1.5;color:#dedee6">Use um cupom autorizado para solicitar o desconto VIP. O acesso ao CINEFLIX continua exigindo login com Google.</p><form id="redeemCodeForm"><label for="redeemCodeInput" style="display:block;margin:14px 0 7px">Seu código</label><input id="redeemCodeInput" name="code" required maxlength="32" autocomplete="off" spellcheck="false" placeholder="Digite seu código" style="width:100%;box-sizing:border-box;background:#0d0d14;border:1px solid #727482;border-radius:9px;padding:12px;color:white;font-size:16px"><p id="redeemCodeStatus" role="status" aria-live="polite" style="font-size:13px;color:#ffc96b;min-height:38px">Resgate aguardando integração segura com o servidor. Nenhum desconto é aplicado nesta etapa.</p><button type="submit" class="btn" style="width:100%;background:#e7132b">Verificar código</button></form><button type="button" id="redeemCodeClose" class="btn alt" style="margin-top:10px;width:100%">Fechar</button></dialog><dialog id="vipInfoDialog" aria-labelledby="vipInfoTitle" style="width:min(90vw,390px);max-width:390px;max-height:82dvh;overflow-y:auto;box-sizing:border-box;border:1px solid #8f6c2d;border-radius:16px;background:#17151b;color:white;padding:16px;box-shadow:0 20px 80px #0009"><div style="display:flex;align-items:center;justify-content:space-between;gap:10px"><strong style="font-size:20px;color:#f6cf73" id="vipInfoTitle">★ CINEFLIX VIP</strong><button type="button" id="vipInfoClose" class="btn alt" aria-label="Fechar informações VIP">✕</button></div><p style="color:#e3d9c6;font-size:13px;margin:8px 0 12px">Assinatura VIP de 30 dias. Escolha como solicitar ou pagar abaixo.</p><section id="vipRequestSection" style="margin:18px 0;padding:16px;border:1px solid #47645c;border-radius:14px;background:#14201f">
+</a>
+</div></div><dialog id="installHelp" style="max-width:420px;width:90%;background:#171a24;color:white;border:1px solid #444;border-radius:18px;padding:25px"><h2 style="margin-top:0">Instalar CINEFLIX</h2><p id="installInstructions" style="line-height:1.7"></p><p style="color:#b4b8c6;font-size:13px">O aplicativo usa internet para carregar o catálogo e reproduzir vídeos.</p><button id="closeInstallHelp" class="btn">Entendi</button></dialog><dialog id="redeemCodeDialog" aria-labelledby="redeemCodeTitle" style="width:min(90vw,420px);background:#171820;color:#fff;border:1px solid #e3273d;border-radius:18px;padding:22px;box-shadow:0 18px 60px #000b"><h2 id="redeemCodeTitle" style="margin:0 0 12px">🎟 Resgatar código</h2><p style="line-height:1.5;color:#dedee6">Use um cupom autorizado para solicitar o desconto VIP. O acesso ao CINEFLIX continua exigindo login com Google.</p><form id="redeemCodeForm"><label for="redeemCodeInput" style="display:block;margin:14px 0 7px">Seu código</label><input id="redeemCodeInput" name="code" required maxlength="32" autocomplete="off" spellcheck="false" placeholder="Digite seu código" style="width:100%;box-sizing:border-box;background:#0d0d14;border:1px solid #727482;border-radius:9px;padding:12px;color:white;font-size:16px"><p id="redeemCodeStatus" role="status" aria-live="polite" style="font-size:13px;color:#ffc96b;min-height:38px">Resgate aguardando integração segura com o servidor. Nenhum desconto é aplicado nesta etapa.</p><button type="submit" class="btn" style="width:100%;background:#e7132b">Verificar código</button></form><button type="button" id="redeemCodeClose" class="btn alt" style="margin-top:10px;width:100%">Fechar</button></dialog><dialog id="vipInfoDialog" aria-labelledby="vipInfoTitle" style="width:min(90vw,390px);max-width:390px;max-height:82dvh;overflow-y:auto;box-sizing:border-box;border:1px solid #8f6c2d;border-radius:16px;background:#17151b;color:white;padding:16px;box-shadow:0 20px 80px #0009"><div style="display:flex;align-items:center;justify-content:space-between;gap:10px"><strong style="font-size:20px;color:#f6cf73" id="vipInfoTitle">★ CINEFLIX VIP</strong><button type="button" id="vipInfoClose" class="btn alt" aria-label="Fechar informações VIP">✕</button></div><p style="color:#e3d9c6;font-size:13px;margin:8px 0 12px">Assinatura VIP de 30 dias. Escolha como solicitar ou pagar abaixo.</p><section id="vipRequestSection" style="margin:18px 0;padding:16px;border:1px solid #47645c;border-radius:14px;background:#14201f">
 <strong style="font-size:18px;color:#c4ffdf">📩 Solicitar assinatura VIP</strong>
 <p style="font-size:13px;line-height:1.6;color:#d9e5df">👑 Seja VIP e desfrute dos recursos exclusivos do CINEFLIX! Informe seu WhatsApp e nossa equipe de atendimento entrará em contato para orientar sua assinatura.</p>
 <form id="vipRequestForm">
